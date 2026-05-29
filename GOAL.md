@@ -73,6 +73,31 @@ Agent 当前已经有相对完整的目录。AI Infra、Pre-Train、Post-Train�
 
 这些文档要互相链接。方向首页链接路径、信息来源、开源项目、框架工具和核心概念；项目页链接概念和外部项目；概念页链接项目和路径。不要形成孤立页面。
 
+### 经典论文深挖模块
+
+仓库可以增加 `11-papers/` 作为跨方向论文深挖模块，但它不能变成论文收藏夹。
+
+论文深挖的目标不是复述摘要、翻译公式或堆链接，而是回答：
+
+- 这篇论文解决了哪个后来反复出现的问题。
+- 它引入的关键抽象是什么。
+- 哪些思想已经进入了今天的模型、框架、推理系统、后训练或 Agent 工程。
+- 哪些结论只在当时实验条件下成立，不能直接外推。
+- 读者应该先看论文的哪些章节、图、实验或 ablation。
+- 读完后应该用什么代码、项目或小实验验证理解。
+
+每篇论文深挖至少要连接到仓库已有概念或方向，例如 [[Transformer]]、[[Attention]]、[[Training Loop]]、[[SFT]]、[[DPO]]、[[RLHF]]、[[Inference Serving]]、[[Agent Loop]]。如果一篇论文无法连接到本仓库的学习路径或项目实践，就暂时不收。
+
+优先覆盖这些类型：
+
+- 架构基石：AlexNet、Seq2Seq、Attention、Transformer、BERT、GPT 系列。
+- 训练和优化：Dropout、BatchNorm、Adam、Scaling Laws、Chinchilla。
+- 后训练和对齐：InstructGPT、RLHF、DPO、Constitutional AI、GRPO 相关论文。
+- 系统和推理：FlashAttention、PagedAttention、Megatron-LM、DeepSpeed。
+- Agent 和工具使用：ReAct、Toolformer、WebGPT、Voyager 等与真实任务循环有关的论文。
+
+写作上要克制。每篇深挖优先保留主线、工程含义、误读风险和验证任务；复杂公式可以链接原文或外部讲解，不在仓库里重写完整推导。
+
 ## 写作前调研工作流
 
 写方向文档、项目路线、资源索引或开源项目分析前，必须先调研，再写文档。不能凭印象列项目，也不能只根据自己已经知道的几个工具下结论。
