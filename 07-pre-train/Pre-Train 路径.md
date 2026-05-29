@@ -5,10 +5,10 @@ Pre-Train 关注模型在大规模数据上学习通用能力的过程。它不�
 ## 学习顺序
 
 1. 先读 [[Transformer]]、[[Token]]、[[Embedding]]、[[Inference]]。
-2. 用 nanoGPT 看最小 GPT 训练循环。
-3. 理解数据集、tokenizer、batch、loss、checkpoint 和生成评测。
+2. 读 [[Training Loop]]，用 nanoGPT 看最小 GPT 训练循环。
+3. 理解 [[Dataset Pipeline]]、[[Tokenizer Training]]、batch、loss、[[Checkpoint]] 和生成评测。
 4. 用 LitGPT 跑一个更接近现代 LLM 工作流的小实验。
-5. 再看 Megatron-LM 这类大规模训练项目，补并行和稳定性概念。
+5. 再看 [[Distributed Training]] 和 Megatron-LM，补并行和稳定性概念。
 
 不要从训练平台开始。没有小规模训练直觉时，平台细节会变成术语堆积。
 
@@ -30,6 +30,8 @@ Pre-Train 关注模型在大规模数据上学习通用能力的过程。它不�
 - [LitGPT](https://github.com/Lightning-AI/litgpt)：代表更完整的 pretrain/finetune/evaluate/deploy 工作流。先看 workflows、recipes 和 examples。
 - [Megatron-LM](https://github.com/NVIDIA/Megatron-LM)：代表大规模 Transformer 训练。先看 README、training scripts、parallelism 文档。
 - [Hugging Face Transformers Trainer](https://huggingface.co/docs/transformers/trainer)：看通用训练循环和 evaluation 接口。
+
+更详细的阅读入口见 [[Pre-Train 信息来源]]。项目拆解见 [[Pre-Train 开源项目]]。工具分层见 [[Pre-Train 框架和工具]]。
 
 ## 工程实践清单
 
