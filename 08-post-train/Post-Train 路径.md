@@ -5,9 +5,9 @@ Post-Train 关注预训练之后的模型改造：指令微调、偏好优化、
 ## 学习顺序
 
 1. 先理解 [[Pre-Train]] 和 post-train 的边界。
-2. 用小模型做 SFT，学习数据格式、chat template 和训练配置。
+2. 用小模型做 [[SFT]]，学习数据格式、chat template 和训练配置。
 3. 用同一组 [[Evals]] 比较微调前后输出。
-4. 再看 DPO、GRPO、reward model 和 RLHF。
+4. 再看 [[DPO]]、[[GRPO]]、[[Reward Model]] 和 [[RLHF]]。
 5. 最后看大规模框架如何处理分布式、vLLM、Ray 和数据管线。
 
 公式可以晚一点看。先知道每种方法想修什么问题。
@@ -30,6 +30,8 @@ Post-Train 关注预训练之后的模型改造：指令微调、偏好优化、
 - [Axolotl](https://docs.axolotl.ai/)：代表配置驱动的 fine-tuning。先看 quick start、dataset formats、examples。
 - [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory)：代表多模型、多方法和 WebUI 的 fine-tuning 工作流。先看 examples、data format、training scripts。
 - [OpenRLHF](https://github.com/OpenRLHF/OpenRLHF)：代表 Ray、vLLM 和 RLHF/GRPO 工程化。先看 README、examples 和 docs。
+
+更详细的信息源见 [[Post-Train 信息来源]]。项目拆解见 [[Post-Train 开源项目]]。工具分层见 [[Post-Train 框架和工具]]。
 
 ## 工程实践清单
 
