@@ -2,52 +2,55 @@
 
 Agent Loop 是 Agent 的工作循环。它让模型不是一次性回答，而是在目标、上下文、工具结果和反馈之间反复推进。
 
-相关概念：
+## 工作机制
 
-- [[Agent]]
-- [[Tool Use]]
-- [[ReAct]]
-- [[Context Engineering]]
-- [[Evals]]
+一个最小循环是：
 
-## 最小循环
+```text
+observe -> decide -> act -> observe result -> decide next step
+```
 
-一个最小 loop 可以这样理解：
+在代码里，它通常表现为有限轮数的 while loop。每一轮都要记录输入、模型输出、工具调用、工具结果和停止原因。
 
-1. 观察当前目标和上下文
-2. 判断下一步该做什么
-3. 调用工具或生成结果
-4. 读取反馈
-5. 决定继续还是结束
-
-这个结构看起来简单，但很多 Agent 问题都出在这里：什么时候继续，什么时候停止，失败结果怎么处理，工具输出是否可信。
-
-## 学到什么程度
-
-入门阶段先能写出一个有限循环：
-
-- 有最大轮数
-- 每轮有清晰日志
-- 工具调用有结构化输入输出
-- 失败会进入下一轮上下文
-- 最后有可检查的完成条件
-
-不要一开始追求“自主规划一切”。没有停止条件的 loop 只会把成本和错误放大。
-
-## 项目里怎么出现
+## 工程形态
 
 以 coding agent 为例：
 
-- 读任务
-- 搜索相关文件
-- 修改代码
-- 运行测试
-- 根据失败信息继续修改
-- 测试通过后停止
+1. 读任务。
+2. 搜索相关文件。
+3. 修改代码。
+4. 运行测试。
+5. 根据失败信息继续修改。
+6. 测试通过或达到边界后停止。
 
-这就是一个典型 loop。它的价值不在“模型会思考”，而在它能把外部反馈纳入下一步行动。
+这个循环的价值不在“模型会思考”，而在它能把外部反馈纳入下一步行动。
 
-## 资料
+## 最小例子
+
+```python
+for step in range(max_steps):
+    decision = model.decide(state)
+    if decision.type == "final":
+        return decision.answer
+    result = run_tool(decision.tool, decision.args)
+    state.add_observation(result)
+```
+
+真实系统还要处理取消、超时、权限、工具错误和日志。
+
+## 边界和失败模式
+
+常见失败包括：
+
+- 没有最大轮数，循环烧成本。
+- 工具失败没有回到上下文，模型反复犯同一个错。
+- 停止条件模糊，任务完成了还继续行动。
+- 日志不完整，无法复盘为什么调用某个工具。
+- 最终答案不引用工具结果。
+
+一个可用 loop 必须可停止、可追踪、可恢复部分失败。
+
+## 参考资料
 
 - [ReAct paper](https://arxiv.org/abs/2210.03629)：看 reasoning 和 acting 如何交替。
-- [OpenAI Codex docs](https://developers.openai.com/codex)：看 coding agent 的真实产品形态。
+- [LangGraph docs](https://docs.langchain.com/oss/python/langgraph)：看有状态、可恢复的循环和图执行。

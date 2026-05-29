@@ -1,53 +1,58 @@
 # Tool Use
 
-Tool Use 是让模型调用外部能力的方法。工具可以是搜索、文件读写、数据库查询、浏览器操作、代码执行、发邮件或调用业务 API。
+Tool Use 是让模型调用外部能力的方法。工具可以是搜索、文件读写、数据库查询、浏览器操作、代码执行、发邮件或业务 API。
 
-没有工具，[[Agent]] 只能生成文本。有工具后，它能改变外部世界，所以系统设计要更谨慎。
+没有工具，[[Agent]] 只能生成文本。有工具后，它能改变外部世界，所以系统边界必须更清楚。
 
-相关概念：
+## 工作机制
 
-- [[Agent]]
-- [[Agent Loop]]
-- [[API Auth]]
-- [[Security]]
-- [[Context Engineering]]
+常见流程是：
 
-## 为什么重要
+```text
+tool schema -> model chooses tool + args -> code validates -> tool executes -> result returns to context
+```
 
-Tool use 把模型从“回答问题”推进到“执行任务”。这也是风险变大的地方。
+模型只负责提出工具调用。是否允许执行、参数是否有效、结果如何截断，应该由代码决定。
 
-你需要关心：
+## 工程形态
 
-- 模型能调用哪些工具
-- 每个工具的输入 schema 是否清楚
-- 工具执行前是否需要确认
-- 工具失败时如何返回错误
-- 工具结果是否要被摘要或截断再放回上下文
+一个工具至少需要：
 
-如果这些边界不清楚，Agent 很容易做出看似合理但不可控的动作。
+- name：稳定名称。
+- description：什么时候使用。
+- input schema：参数类型和约束。
+- permission policy：谁能用、能访问哪些资源。
+- result contract：返回什么，错误怎么表示。
 
-## 学到什么程度
+工具结果不能无限塞回上下文。长结果要摘要，敏感结果要脱敏，失败结果要结构化。
 
-入门阶段先做两个工具就够：
+## 最小例子
 
-- 一个只读工具，比如搜索文件或查询资料
-- 一个低风险写工具，比如创建草稿或生成报告
+```json
+{
+  "name": "read_file",
+  "input": {
+    "path": "docs/Agent.md"
+  }
+}
+```
 
-先不要让模型直接执行高风险操作。删除文件、发生产邮件、改数据库、花钱调用服务，都应该有权限和确认机制。
+执行前代码要检查：路径是否在允许目录内，用户是否有权限，文件是否过大，结果是否需要截断。
 
-## 在代码里怎么出现
+## 边界和失败模式
 
-常见实现方式：
+常见失败包括：
 
-- 用 JSON schema 描述工具参数
-- 模型输出工具名和参数
-- 程序校验参数
-- 程序执行工具
-- 工具结果回到模型上下文
+- 工具描述模糊，模型频繁选错工具。
+- 参数校验缺失，模型生成危险路径或非法 SQL。
+- 高风险动作没有确认。
+- 工具错误只返回自然语言，模型无法稳定恢复。
+- 工具结果过长，把上下文挤爆。
 
-注意：参数校验和权限检查必须在代码里做，不能只靠 prompt。
+工具调用是 Agent 从“说”到“做”的分界线。这里不能靠运气。
 
-## 资料
+## 参考资料
 
-- [OpenAI Function Calling guide](https://platform.openai.com/docs/guides/function-calling)：看工具调用的基本形态。
+- [OpenAI function calling guide](https://platform.openai.com/docs/guides/function-calling)：看工具调用的基本形态。
 - [Model Context Protocol](https://modelcontextprotocol.io/docs)：了解工具和上下文接入的一种标准化方向。
+- [[Security]]：工具权限和 prompt injection 风险。

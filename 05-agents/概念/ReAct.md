@@ -1,43 +1,40 @@
 # ReAct
 
-ReAct 是一篇经典论文提出的 Agent 推理方式：把 reasoning 和 acting 交替组织起来。
+ReAct 是一篇经典论文提出的 Agent 模式：把 reasoning 和 acting 交替组织起来。它的价值不是提供固定 prompt，而是说明很多任务需要“想一步、做一步、看结果、再修正”。
 
-它的价值不是提供一个永远正确的 prompt 模板，而是说明很多任务需要模型先思考、再行动、再根据观察结果修正。
+## 工作机制
 
-相关概念：
+ReAct 的基本结构是：
 
-- [[Agent]]
-- [[Agent Loop]]
-- [[Tool Use]]
-- [[Prompting]]
-- [[Evals]]
+```text
+Reason -> Act -> Observe -> Reason -> ...
+```
 
-## 为什么值得学
+Reason 是模型判断下一步要做什么。Act 是选择工具或行动。Observe 是系统把工具结果返回给模型。这和 [[Agent Loop]] 是同一类思想。
 
-没有外部行动时，模型只能基于已有上下文回答。任务一旦需要搜索、计算、读文件或调用 API，就会进入“想一步、做一步、再看结果”的模式。
+## 工程形态
 
-ReAct 给初学者一个清楚框架：
+适合 ReAct 的任务通常需要外部信息或外部动作：
 
-- Reason：模型判断当前该做什么
-- Act：模型选择工具或行动
-- Observe：系统把工具结果返回给模型
+- 搜索资料后回答。
+- 读文件后修改代码。
+- 查询数据库后生成报告。
+- 调用工具失败后换策略。
 
-这就是 [[Agent Loop]] 的早期经典表达。
+不需要外部反馈的任务，不一定要做成 ReAct。普通生成或一次结构化抽取可能更简单。
 
-## 学到什么程度
+## 边界和失败模式
 
-先理解模式，不要迷信格式。
+常见失败包括：
 
-你需要知道：
+- 把 reasoning 全部暴露给用户，泄露内部策略或无关内容。
+- 工具结果没有结构化，模型难以继续。
+- 没有停止条件，ReAct 变成无限循环。
+- 迷信论文 prompt 格式，不做权限、日志和 eval。
 
-- ReAct 适合需要多步外部信息的任务
-- 工具结果必须可靠地回到上下文
-- reasoning 文本不一定要暴露给用户
-- 复杂任务需要停止条件和 eval
+ReAct 是理解 Agent 的入口，不是生产系统的完整架构。
 
-不需要一开始复现论文实验。做一个能搜索资料再回答的小 Agent，更能建立直觉。
-
-## 资料
+## 参考资料
 
 - [ReAct paper](https://arxiv.org/abs/2210.03629)：原始论文。
-- [LangChain ReAct agents](https://python.langchain.com/docs/concepts/agents/)：看框架里如何抽象这种模式。
+- [LangChain agents concepts](https://python.langchain.com/docs/concepts/agents/)：看框架中 agent 和 tool 的抽象。

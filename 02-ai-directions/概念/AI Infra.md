@@ -1,55 +1,41 @@
 # AI Infra
 
-AI Infra 是让模型训练、推理、评测和应用稳定运行的基础设施。
+AI Infra 是让模型训练、推理、评测和应用稳定运行的基础设施。它不是“会部署模型”这么窄，而是把模型能力变成可观测、可控制、可维护的系统。
 
-它不是单纯“会部署模型”。更现实的工作包括：推理服务、GPU 利用率、数据管道、模型评测、日志与 tracing、成本控制、权限和安全边界。
+完整路径见 [[AI Infra 路径]]。
 
-相关概念：
+## 方向边界
 
-- [[Inference]]
-- [[Context Window]]
-- [[Prompt Cache]]
-- [[Evals]]
-- [[API Auth]]
-- [[Streaming Response]]
+AI Infra 关心这些问题：
 
-## 为什么值得学
+- [[Inference]] 服务如何处理并发、排队、流式输出和错误。
+- 模型、prompt、数据和 eval 如何版本化。
+- [[Cost]] 如何被记录、归因和控制。
+- [[Evals]] 如何进入发布流程。
+- 用户数据、API key 和工具权限如何隔离。
+- 自部署模型如何观察 GPU、KV cache、batch 和 p95 延迟。
 
-AI 项目从 demo 走向可用系统时，问题很快从“模型能不能回答”变成：
+如果一个项目只能在本地演示，但没有日志、错误分类、取消、权限和成本记录，它还没进入可用系统阶段。
 
-- 响应太慢怎么办
-- 并发上来后成本怎么控
-- 模型输出失败怎么定位
-- 工具调用和用户数据怎么隔离
-- 版本升级后质量有没有退化
+## 典型工程形态
 
-这些都属于 AI Infra 的范围。
+常见形态包括：
 
-## 入门边界
+- 模型调用网关。
+- vLLM 或 SGLang 推理服务。
+- Ray Serve 或 KServe 模型服务平台。
+- eval 和 regression test 流水线。
+- 模型路由、配额、审计和监控。
 
-入门阶段先学：
+AI Infra 的产出往往没有漂亮 UI，但它决定系统能不能被真实用户反复使用。
 
-- LLM API 调用、超时、重试和限流
-- streaming response 的前后端链路
-- 基本 eval 和日志
-- prompt、模型版本和数据集的版本管理
-- 推理成本和 token 预算
+## 和其他方向的关系
 
-先不要急着自建训练平台。没有真实负载时，平台化容易变成空架子。
+- 为 [[Agent]] 提供工具日志、流式事件、取消和追踪。
+- 为 [[RAG]] 提供索引、检索服务、权限和评测。
+- 为 [[Post-Train]] 和 [[Pre-Train]] 提供训练、评测和部署链路。
+- 为所有应用提供成本和安全边界。
 
-## 项目方向
+## 学习入口
 
-可以从这些小项目开始：
-
-- 做一个支持 [[SSE]] 的模型流式输出服务
-- 给一个 [[Agent]] 项目加日志、重试和 eval
-- 比较不同模型在同一任务上的延迟、成本和质量
-- 用 [[Prompt Cache]] 优化长上下文任务
-
-更完整的路径入口见 [[AI Infra 路径]]。
-
-## 资料
-
-- [vLLM docs](https://docs.vllm.ai/)：看推理服务常见工程问题。
-- [OpenTelemetry](https://opentelemetry.io/docs/)：理解 tracing 和可观测性。
-- [OpenAI Evals GitHub](https://github.com/openai/evals)：了解 eval 在工程里的基本形态。
+先做 [[项目路线]] 里的模型调用网关。然后再看 vLLM、SGLang、Ray Serve 和 KServe。不要反过来先搭平台。
