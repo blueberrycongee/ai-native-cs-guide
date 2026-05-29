@@ -38,4 +38,4 @@ AI Infra 的产出往往没有漂亮 UI，但它决定系统能不能被真实�
 
 ## 学习入口
 
-先做 [[项目路线]] 里的模型调用网关。然后再看 vLLM、SGLang、Ray Serve 和 KServe。不要反过来先搭平台。
+先读 [[AI Infra 方向]]，再做 [[项目路线]] 里的模型调用网关。然后再看 vLLM、SGLang、Ray Serve 和 KServe。不要反过来先搭平台。

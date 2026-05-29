@@ -39,4 +39,4 @@ Pre-Train 是在大规模数据上训练模型，让模型获得通用语言、�
 
 ## 学习入口
 
-先读 nanoGPT，再用 LitGPT 跑小实验。等能解释 batch、loss、checkpoint 和生成样例，再看 Megatron-LM 这类大规模训练项目。
+先读 [[Pre-Train 方向]]，再读 nanoGPT，并用 LitGPT 跑小实验。等能解释 batch、loss、checkpoint 和生成样例，再看 Megatron-LM 这类大规模训练项目。

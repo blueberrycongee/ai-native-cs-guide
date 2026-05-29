@@ -31,4 +31,4 @@ Post-training 改的是模型行为：更会按指令回答、更稳定输出格
 
 ## 学习入口
 
-先用 TRL 或 Axolotl 做小模型 SFT，再做 DPO。LLaMA-Factory 适合看配置化和 WebUI 工作流。OpenRLHF 适合后面理解大规模 RLHF/GRPO。
+先读 [[Post-Train 方向]]，再用 TRL 或 Axolotl 做小模型 SFT，然后做 DPO。LLaMA-Factory 适合看配置化和 WebUI 工作流。OpenRLHF 适合后面理解大规模 RLHF/GRPO。

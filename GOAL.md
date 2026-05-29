@@ -304,7 +304,7 @@ GOAL.md
     Single Agent vs Multi-Agent.md
 
 06-ai-infra/
-  AI Infra.md
+  AI Infra 方向.md
   AI Infra 路径.md
   AI Infra 信息来源.md
   AI Infra 开源项目.md
@@ -317,7 +317,7 @@ GOAL.md
     GPU Basics.md
 
 07-pre-train/
-  Pre-Train.md
+  Pre-Train 方向.md
   Pre-Train 路径.md
   Pre-Train 信息来源.md
   Pre-Train 开源项目.md
@@ -330,7 +330,7 @@ GOAL.md
     Distributed Training.md
 
 08-post-train/
-  Post-Train.md
+  Post-Train 方向.md
   Post-Train 路径.md
   Post-Train 信息来源.md
   Post-Train 开源项目.md
@@ -344,7 +344,7 @@ GOAL.md
     Reward Model.md
 
 09-rl/
-  RL.md
+  RL 方向.md
   RL 路径.md
   RL 信息来源.md
   RL 开源项目.md

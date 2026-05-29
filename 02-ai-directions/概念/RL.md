@@ -38,4 +38,4 @@ RL 的工程难点通常是奖励设计和评测。奖励写歪了，模型会�
 
 ## 学习入口
 
-先用 Gymnasium 跑小环境，再读 CleanRL 单文件算法。大模型方向再回到 TRL 和 OpenRLHF，不要一开始把传统 RL 和 LLM post-training 混成一团。
+先读 [[RL 方向]]，用 Gymnasium 跑小环境，再读 CleanRL 单文件算法。大模型方向再回到 TRL 和 OpenRLHF，不要一开始把传统 RL 和 LLM post-training 混成一团。
