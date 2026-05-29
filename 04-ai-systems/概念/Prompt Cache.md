@@ -1,44 +1,60 @@
 # Prompt Cache
 
-Prompt Cache 是复用重复上下文来降低延迟和成本的机制。它常出现在长 system prompt、长文档、多轮对话和 Agent 工作流里。
+Prompt Cache 是复用重复上下文来降低延迟和成本的机制。它常出现在长 system prompt、长文档、多轮任务和 Agent 工作流里。
 
-相关概念：
+它优化的是重复计算，不保证答案质量变好。上下文本身如果是错的，缓存只会让错误更便宜。
 
-- [[Context Window]]
-- [[Context Engineering]]
-- [[Token]]
-- [[Agent]]
-- [[Inference]]
+## 工作机制
 
-## 为什么值得学
+很多请求有稳定前缀：
 
-长上下文任务很贵，也容易慢。很多请求有重复前缀，比如系统指令、工具说明、代码库摘要、文档片段。
+```text
+system rules + tool descriptions + repository summary + user request
+```
 
-Prompt cache 的价值在于：如果供应商或推理系统能复用这些重复内容，就能减少重复计算。
+如果前缀相同或满足供应商的缓存规则，推理系统可以复用这部分上下文的计算结果。对自部署模型来说，相近问题会落到 KV cache、prefix cache 或调度策略；对托管 API 来说，缓存规则由供应商定义。
 
-## 学到什么程度
+## 工程形态
 
-先理解：
+要让 prompt cache 有用，上下文要按“稳定前缀 + 变化输入”组织：
 
-- cache 通常依赖稳定的上下文前缀
-- 改动前缀可能导致 cache 失效
-- 不同模型供应商的 cache 规则不同
-- cache 优化成本和延迟，不保证答案质量变好
+- 系统规则、工具说明、长文档摘要放前面，尽量稳定。
+- 用户本轮输入、临时检索结果和动态状态放后面。
+- 不要在前缀里插入时间戳、随机 id 或每轮变化的日志。
+- 记录缓存命中率、输入 token、首 token 延迟和费用。
 
-暂时不必研究推理引擎内部实现。做应用时，先学会识别哪些上下文应该稳定、哪些内容应该放在后面变化。
+Agent 和代码助手特别容易受益，因为它们每轮都会携带类似的仓库规则、工具说明和安全约束。
 
-## 在项目里怎么出现
+## 最小例子
 
-常见场景：
+```text
+[stable prefix]
+  system rules
+  tool schemas
+  repository conventions
 
-- coding agent 每轮都带同一份仓库规则
-- 文档问答系统反复带同一批长资料
-- 工具调用说明很长，但每次请求都一样
-- 多轮任务中系统指令和安全规则固定
+[dynamic suffix]
+  current user request
+  selected file snippets
+  latest tool output
+```
 
-这时可以考虑 prompt cache，或者至少把上下文组织成“稳定前缀 + 变化输入”的形态。
+这不是提示词美化，而是成本结构设计。把高频变化内容放到前缀里，会让缓存失效。
 
-## 资料
+## 边界和失败模式
 
-- [OpenAI Prompt Caching](https://platform.openai.com/docs/guides/prompt-caching)：看自动缓存规则。
-- [Anthropic Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)：看显式 cache breakpoint。
+常见失败包括：
+
+- 期待缓存改善答案质量。
+- 每次请求都重排工具说明，导致前缀不稳定。
+- 把用户隐私数据放进可复用上下文，没有隔离策略。
+- 不记录命中率，无法判断优化是否有效。
+- 因为追求缓存，把本该更新的上下文固定住。
+
+使用托管模型时，要以供应商文档为准。不同 API 的缓存粒度、计费和失效规则可能差很多。
+
+## 参考资料
+
+- [OpenAI prompt caching](https://platform.openai.com/docs/guides/prompt-caching)：看自动缓存规则。
+- [Anthropic prompt caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)：看显式 cache breakpoint。
+- [[Cost]]：缓存如何进入成本模型。

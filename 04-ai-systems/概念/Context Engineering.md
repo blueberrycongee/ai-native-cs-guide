@@ -1,41 +1,70 @@
 # Context Engineering
 
-Context Engineering 是为模型组织上下文的工程方法。它关心哪些信息进入 [[Context Window]]、以什么顺序进入、如何压缩、如何更新，以及如何避免无关信息污染任务。
+Context Engineering 是为模型组织上下文的工程方法。它关心哪些信息进入 [[Context Window]]、顺序如何安排、如何压缩、如何更新，以及如何避免无关信息污染任务。
 
-它比 [[Prompting]] 更宽。Prompting 偏任务说明，context engineering 还包括检索、记忆、工具结果、历史消息和系统状态。
+它比 [[Prompting]] 宽。Prompting 写任务说明；context engineering 还包括检索资料、历史消息、工具结果、运行状态、记忆和成本预算。
 
-相关概念：
+## 工作机制
 
-- [[Context Window]]
-- [[RAG]]
-- [[Prompt Cache]]
-- [[Agent]]
-- [[Memory]]
+模型不会自动知道你的系统状态。你必须把当前任务需要的信息放进上下文，或者让模型通过工具去取。
 
-## 为什么值得学
+一个可控的上下文通常会拆成几类：
 
-LLM 的能力很大程度取决于它看到什么。上下文放错，模型可能不是不会，而是没拿到该拿的信息。
+```text
+system rules
+user request
+short-term conversation state
+retrieved evidence
+tool outputs
+durable task state
+output contract
+```
 
-常见问题：
+每一类都应该有 token 预算和进入条件。否则上下文会越堆越长，最后既贵又不准。
 
-- 把太多历史消息塞进 prompt，关键信息被淹没
-- [[RAG]] 检索结果相关性不够，模型只能硬答
-- 工具返回太长，Agent 后续步骤变慢
-- 系统状态没有结构化，模型很难稳定接着做
+## 工程形态
 
-## 学到什么程度
+真实项目里，context engineering 通常落在这些组件上：
 
-入门阶段先掌握：
+- prompt builder：把不同来源拼成模型输入。
+- retriever：为 [[RAG]] 找证据。
+- summarizer：压缩历史对话或长工具输出。
+- memory store：保存长期偏好、事实或任务状态。
+- policy layer：决定哪些内容不能进 prompt。
+- eval set：比较不同上下文策略的效果。
 
-- 区分任务说明、用户输入、检索资料、工具结果和历史状态
-- 控制每类上下文的 token 预算
-- 对长任务做摘要和状态压缩
-- 保留可追溯证据，不让模型只凭记忆回答
-- 用 eval 检查上下文策略是否真的改善结果
+Agent 系统尤其需要这层。工具结果、文件修改、待办状态和用户确认，不能只靠对话历史保存。
 
-暂时不用设计复杂 memory 系统。很多项目先做好检索、摘要和日志，就能解决大部分问题。
+## 最小例子
 
-## 资料
+一个 RAG 问答的上下文构造可以写成明确规则：
 
-- [OpenAI Prompt Caching](https://platform.openai.com/docs/guides/prompt-caching)：理解长上下文的成本优化。
-- [Anthropic Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval)：看检索前给 chunk 补上下文的一种做法。
+```python
+context = [
+    system_rules,
+    format_contract,
+    recent_messages.limit_tokens(1200),
+    retrieved_chunks.top_k(6).with_citations(),
+    user_question,
+]
+```
+
+这段代码背后的判断比 prompt 文案更重要：最近消息只能占 1200 tokens；检索片段必须带来源；用户问题放在最后，减少被长资料淹没的概率。
+
+## 边界和失败模式
+
+常见失败包括：
+
+- 把所有历史消息都带上，关键信息反而丢掉。
+- 工具输出太长，没有摘要和结构化。
+- RAG 检索结果没有来源和权限过滤。
+- 长任务状态只存在对话里，重试或断线后无法恢复。
+- 只优化单次回答，不记录上下文策略对成本和延迟的影响。
+
+Context engineering 的完成标准不是“prompt 很完整”，而是系统能解释每段上下文为什么出现、从哪里来、什么时候删除。
+
+## 参考资料
+
+- [Anthropic Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval)：看给 chunk 补上下文的一种检索策略。
+- [OpenAI prompt caching](https://platform.openai.com/docs/guides/prompt-caching)：理解稳定前缀如何影响成本和延迟。
+- [[Memory]]：Agent 长期状态的设计问题。
