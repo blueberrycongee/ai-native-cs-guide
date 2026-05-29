@@ -14,7 +14,6 @@ Memory 指 Agent 跨步骤或跨会话保留信息的能力。
 
 相关概念：
 
-- [[State]]
 - [[RAG]]
 - [[Context Engineering]]
 - [[Skills]]

@@ -13,7 +13,7 @@ LLM
   -> Prompt / Context
   -> Tool Use
   -> Agent Loop
-  -> State / Memory
+  -> Memory
   -> RAG
   -> Skills
   -> Workflow / Human in the Loop
@@ -26,7 +26,7 @@ LLM
 - [[Prompting]] 和 [[Context Engineering]] 决定模型在当前任务里看到什么
 - [[Tool Use]] 让模型能调用外部能力
 - [[Agent Loop]] 把观察、推理、行动、反馈组织成循环
-- [[State]] 和 [[Memory]] 让 Agent 能跨步骤、跨会话工作
+- [[Memory]] 让 Agent 能跨步骤、跨会话保留必要信息
 - [[RAG]] 让 Agent 能从外部知识库拿信息
 - [[Skills]] 把可复用能力封装成可被 Agent 调用的知识或工具包
 - [[Workflow]] 和 [[Human in the Loop]] 让 Agent 进入真实业务流程

@@ -7,7 +7,7 @@
 一个简化的 loop 是：
 
 ```text
-observe -> think / plan -> act -> get feedback -> update state -> continue or stop
+observe -> think / plan -> act -> get feedback -> continue or stop
 ```
 
 要理解 Agent，先看 loop，不要一上来就学框架。
@@ -17,13 +17,12 @@ observe -> think / plan -> act -> get feedback -> update state -> continue or st
 - Agent 如何知道下一步该做什么
 - 什么时候继续，什么时候停止
 - 工具失败后如何恢复
-- 中间状态存在哪里
+- 中间结果如何进入下一轮判断
 - 哪些动作需要用户确认
 
 相关概念：
 
 - [[ReAct]]
 - [[Tool Use]]
-- [[State]]
 - [[Human in the Loop]]
 - [[Evals]]
