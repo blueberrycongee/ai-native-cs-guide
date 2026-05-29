@@ -46,7 +46,7 @@
 
 ### 2. 公共基础要抽出来
 
-有些内容不属于任何单一路径，例如 Transformer、token、embedding、context window、inference、LLM API、RAG、evals、security、cost。
+有些内容不属于任何单一路径，例如 Transformer、token、embedding、context window、inference、LLM API、RAG。
 
 这些内容如果放进某个路径目录，会让路径变成杂物间。公共内容应该放到公共目录里，再由不同路径按需链接。
 
@@ -123,9 +123,6 @@ GOAL.md
     Prompting.md
     Context Engineering.md
     RAG.md
-    Evals.md
-    Security.md
-    Cost.md
     Prompt Cache.md
 
 04-agents/
@@ -155,7 +152,6 @@ GOAL.md
 - `02-ai-directions` 负责讲清楚 AI 行业的主要方向，让读者先知道有哪些路可以走
 - Agent、AI Infra、Pre-Train、Post-Train、RL 是当前优先纳入方向地图的几条线
 - `agents/概念` 只放 Agent 特有或强相关概念
-- `Cost`、`Evals`、`Security` 这类横切问题不属于 Agent 核心目录
 - `AI Product` 不属于 Agent 核心目录
 - `Workflow` 和 `Human in the Loop` 更像流程或产品化内容，不放在 Agent 核心概念里
 - `State` 先不作为独立概念文档，因为它更适合结合具体代码和系统实现讲
