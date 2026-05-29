@@ -91,6 +91,28 @@
 - 它适合哪个学习阶段
 - 它和本仓库其他内容是什么关系
 
+### 6. 保留必要的 AI 工程基础
+
+这个仓库不走传统八股路线，但有些围绕 AI 应用开发的工程基础需要讲。
+
+例如：
+
+- HTTP
+- WebSocket
+- SSE
+- streaming response
+- API 调用和鉴权
+- 前后端如何传递模型输出
+
+这些内容不要写成通用面试题库。写法应该围绕 AI 场景：
+
+- 为什么流式输出需要理解 HTTP、SSE 或 WebSocket
+- 模型调用为什么经常涉及长连接、超时、重试和取消
+- Agent 或 AI 工具为什么需要前后端实时状态同步
+- 哪些知识只需要会用，哪些需要深入理解
+
+如果已有高质量外部资料能讲清楚协议细节，仓库只做学习顺序和场景解释，再链接出去。
+
 ## 目标信息架构
 
 当前结构还在调整中。先按下面的方向收敛。
@@ -117,7 +139,15 @@ GOAL.md
     Post-Train.md
     RL.md
 
-03-ai-systems/
+03-engineering-basics/
+  概念/
+    HTTP.md
+    WebSocket.md
+    SSE.md
+    Streaming Response.md
+    API Auth.md
+
+04-ai-systems/
   概念/
     LLM.md
     Prompting.md
@@ -125,7 +155,7 @@ GOAL.md
     RAG.md
     Prompt Cache.md
 
-04-agents/
+05-agents/
   Agent.md
   Agent 信息来源.md
   Agent 开源项目.md
@@ -137,11 +167,11 @@ GOAL.md
     Skills.md
     Single Agent vs Multi-Agent.md
 
-05-ai-infra/
-06-pre-train/
-07-post-train/
-08-rl/
-09-projects/
+06-ai-infra/
+07-pre-train/
+08-post-train/
+09-rl/
+10-projects/
 90-resources/
 ```
 
@@ -150,6 +180,7 @@ GOAL.md
 - 仓库要改成带学习顺序的编号目录，不再坚持完全非线性组织
 - `01-foundations` 先讲所有方向共用的 AI 基石
 - `02-ai-directions` 负责讲清楚 AI 行业的主要方向，让读者先知道有哪些路可以走
+- `03-engineering-basics` 放围绕 AI 应用开发必须理解的工程基础，例如 HTTP、WebSocket、SSE、流式响应和 API 鉴权
 - Agent、AI Infra、Pre-Train、Post-Train、RL 是当前优先纳入方向地图的几条线
 - `agents/概念` 只放 Agent 特有或强相关概念
 - `AI Product` 不属于 Agent 核心目录
@@ -703,7 +734,7 @@ metadata:
 ## 待处理问题
 
 - 编号目录的最终命名是否采用 `01-foundations`，还是使用中文名加编号
-- `03-ai-systems/` 是否是合适命名，还是应该叫 `03-common-systems/`、`03-ai-core/`
+- `04-ai-systems/` 是否是合适命名，还是应该叫 `04-common-systems/`、`04-ai-core/`
 - 每条就业路径应该如何命名
 - Agent 方向是否先只保留 `Skills.md`，其它概念页后续重写
 - README 目前说“不会按 `01`、`02` 这种线性章节组织”，这和新判断冲突，需要后续同步修改
