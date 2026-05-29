@@ -1,53 +1,61 @@
 # API Auth
 
-API Auth 是调用模型、工具和后端服务时的鉴权方式。AI 应用里最常见的是 API key、Bearer token、OAuth 和临时凭证。
+API Auth 处理两个问题：谁能调用接口，以及调用时能访问哪些资源。AI 应用里它还关系到模型 key、用户数据、工具权限和成本控制。
 
-它不是安全装饰。模型调用通常直接关联成本和用户数据，鉴权做错会造成账单、数据和权限问题。
+最重要的原则很简单：模型供应商的 API key 不应该出现在浏览器里。前端请求自己的后端，后端再用受控凭证调用模型。
 
-相关概念：
+## 工程形态
 
-- [[HTTP]]
-- [[Security]]
-- [[Tool Use]]
-- [[Agent]]
+一个常见结构是：
 
-## 为什么要学
+```text
+browser user session
+  -> your backend auth
+  -> policy check / quota check
+  -> model provider API key
+```
 
-AI 项目里经常出现这些错误：
+用户身份和模型供应商 key 是两层东西。用户登录证明“这个人是谁”；供应商 key 证明“你的服务能调用模型”。不要把这两层混起来。
 
-- 把模型 API key 放到前端
-- 所有用户共用同一个高权限 token
-- Agent 工具调用没有权限边界
-- 日志里打印了 key、cookie 或用户隐私数据
-- token 泄露后没有轮换机制
+## 需要控制的权限
 
-这些不是复杂安全攻防，很多是基本工程卫生。
+AI 系统的权限不只在 HTTP 接口上：
 
-## 学到什么程度
+- 用户能上传、检索、删除哪些文档。
+- [[RAG]] 检索时能看到哪些向量和原文。
+- [[Agent]] 能调用哪些工具，工具能读写哪些系统。
+- 某个用户或组织的模型调用额度是多少。
+- 日志里哪些内容需要脱敏。
 
-入门阶段先掌握：
+特别是 Agent。只要工具能发邮件、改数据库、执行代码或访问内部系统，权限就不能靠 prompt 约束。prompt 不是安全边界。
 
-- API key 不应该出现在浏览器包里
-- 后端要替前端调用模型供应商 API
-- 用户身份、工具权限和模型供应商 key 是三件事
-- 日志、错误上报和 prompt 里都可能泄露凭证
-- 需要支持 key 轮换和最小权限
+## 最小例子
 
-暂时不必自己实现完整 OAuth。大多数项目用成熟身份服务或框架更稳。
+后端调用工具前应做显式授权：
 
-## 在 AI 项目里怎么出现
+```python
+def run_tool(user, tool_name, args):
+    if not policy.allow(user, tool_name, args):
+        raise PermissionDenied(tool_name)
+    return tools[tool_name].run(args)
+```
 
-典型设计：
+模型可以建议调用工具，但最终是否执行，应由代码根据用户、资源、参数和环境决定。
 
-- 前端带用户身份请求自己的后端
-- 后端校验用户权限
-- 后端使用服务端保存的模型 API key
-- Agent 调用工具前再检查工具级权限
-- 关键操作要求用户确认
+## 边界和失败模式
 
-对 [[Agent]] 来说，工具权限比模型本身更危险。模型输出只是文本，工具调用可能会发邮件、删文件、花钱或访问私有数据。
+常见失败包括：
 
-## 资料
+- API key 写进前端环境变量，被打包进静态资源。
+- RAG 向量库没有按用户或租户过滤，召回了别人的文档。
+- 日志记录完整 prompt，泄露用户隐私和内部资料。
+- Agent 工具只看工具名，不校验参数里的资源权限。
+- 免费用户没有速率限制，成本被少数请求打爆。
 
-- [OWASP API Security Top 10](https://owasp.org/API-Security/)：了解 API 常见风险。
-- [OAuth 2.0 Simplified](https://www.oauth.com/)：需要接第三方授权时再看。
+API Auth 不是登录页的附属功能。只要模型能访问数据和工具，它就是系统安全的一部分。
+
+## 参考资料
+
+- [OWASP API Security Top 10](https://owasp.org/API-Security/)：API 风险清单。
+- [OpenAI API keys docs](https://platform.openai.com/docs/api-reference/authentication)：模型 API 鉴权方式。
+- [[Security]]：AI 系统里的 prompt injection、数据泄露和工具权限。

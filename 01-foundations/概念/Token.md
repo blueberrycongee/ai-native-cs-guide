@@ -1,39 +1,58 @@
 # Token
 
-Token 是模型读写文本的基本单位。它可以是一个字、一个词的一部分、一个标点，也可能是一段常见字符串。
+Token 是模型实际处理的文本单位。它可能是一个英文单词、一个中文字符、一个词的一部分，也可能是空格和标点。大语言模型不直接读字符串，它读 token id。
 
-理解 token 很重要，因为大模型的成本、上下文长度、延迟和很多奇怪输出，都和 token 有关。
+这件事看起来小，但会影响计费、上下文长度、流式输出、截断、缓存和多语言体验。
 
-相关概念：
+## 工作机制
 
-- [[Embedding]]
-- [[Context Window]]
-- [[Inference]]
-- [[LLM]]
+tokenizer 把文本切成 token，再把 token 映射成整数 id。模型接收 id 序列，通过 [[Embedding]] 查表得到向量。
 
-## 学到什么程度
+```text
+"hello world" -> ["hello", " world"] -> [15339, 1917]
+```
 
-入门阶段需要知道：
+不同模型的 tokenizer 不一样。同一句中文、代码或 JSON，在不同模型里可能切出不同数量的 token。别用字符数估算成本，尤其别用中文字符数直接估算英文模型的上下文占用。
 
-- 模型不是直接处理“字”或“词”，而是处理 token
-- 同一句话在不同 tokenizer 下可能切出不同 token
-- 中文、代码、空格和特殊符号的 token 成本可能差异很大
-- API 计费和上下文窗口通常都按 token 计算
+## 工程形态
 
-不需要一开始研究每种分词算法。BPE、Unigram、SentencePiece 这些可以等你做 tokenizer、训练模型或压成本时再深入。
+Token 在 AI 项目里经常以这些方式出现：
 
-## 在项目里怎么出现
+- API 计费按输入 token 和输出 token 计算。
+- [[Context Window]] 限制的是 token 数，不是字符数。
+- [[Streaming Response]] 通常是按 token 或 token 片段逐步返回。
+- JSON、代码和表格会产生很多结构 token，长工具参数尤其容易超限。
+- prompt cache、KV cache 和截断策略都以 token 序列为基础。
 
-最常见的场景：
+做 [[RAG]] 时，切块大小也应该按 token 估算。按字符切块会在中英文混排、代码块和表格里出问题。
 
-- prompt 明明不长，token 数却很高
-- 代码、JSON、日志放进 prompt 后成本暴涨
-- [[RAG]] 切块时要控制每块 token 数
-- 流式输出时，前端看到的是模型逐步吐出的 token 或 token 片段
+## 最小例子
 
-如果你做 [[Agent]]，token 还会影响 memory、工具结果压缩和长任务成本。
+一个后端在调用模型前通常会做预算：
 
-## 资料
+```python
+input_tokens = count_tokens(system_prompt + user_text + retrieved_context)
+max_output_tokens = 800
 
-- [OpenAI Tokenizer](https://platform.openai.com/tokenizer)：用来直观看文本如何被切分。
-- [Hugging Face Tokenizers](https://huggingface.co/docs/tokenizers)：适合了解 tokenizer 在工程里的角色。
+if input_tokens + max_output_tokens > context_limit:
+    retrieved_context = compress_or_drop(retrieved_context)
+```
+
+这里的重点不是精确复刻某家 API 的 tokenizer，而是别把上下文限制留到上游模型报错时才发现。
+
+## 边界和失败模式
+
+常见失败包括：
+
+- 用字符数控制 prompt，结果线上偶发超上下文。
+- 忽略输出 token 预算，模型生成到一半被截断。
+- 把完整日志、HTML 或 PDF 原文塞进上下文，token 成本很快失控。
+- 流式渲染时按字符处理，遇到半个 token、半个 Markdown 结构或半个 JSON 片段就显示异常。
+
+Token 不是自然语言单位。它只是模型和系统之间的接口单位。写应用时要尊重这个接口。
+
+## 参考资料
+
+- [OpenAI Tokenizer](https://platform.openai.com/tokenizer)：直观看同一段文本如何被切分。
+- [Hugging Face Tokenizers](https://huggingface.co/docs/tokenizers)：理解 tokenizer 的工程实现。
+- [tiktoken](https://github.com/openai/tiktoken)：适合在 Python 项目里估算 token 数。

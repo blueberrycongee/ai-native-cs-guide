@@ -1,54 +1,65 @@
 # Streaming Response
 
-Streaming response 是边生成边返回结果的响应方式。AI 应用里，它通常用来展示模型正在输出的内容。
+Streaming response 是边生成边返回。AI 应用需要它，是因为 [[Inference]] 往往不是瞬间完成：模型逐 token 生成，工具调用也可能分步骤返回。
 
-它不是前端动画。真正的 streaming 需要模型、后端、网络层和前端都支持逐步传输。
+没有流式响应，用户只能看到一个长时间 loading。更糟的是，系统也更难暴露中间状态、取消任务和定位卡住的位置。
 
-相关概念：
+## 工作机制
 
-- [[Inference]]
-- [[HTTP]]
-- [[SSE]]
-- [[WebSocket]]
-- [[Context Window]]
+流式响应不是一种单独协议，而是一类返回方式。常见选择包括：
 
-## 为什么要学
+- HTTP chunked response：服务端持续写 body。
+- [[SSE]]：在 HTTP 上封装事件，浏览器支持好。
+- [[WebSocket]]：双向长连接，适合复杂实时交互。
 
-大模型推理可能很慢。用户通常不愿意等几十秒后一次性看到完整答案。
+对聊天应用来说，SSE 往往够用。对 Agent 控制台或语音交互，WebSocket 可能更合适。
 
-流式输出能改善体验，也能暴露更多状态：
+## 工程形态
 
-- 首 token 更早出现
-- 用户可以提前判断方向是否对
-- 长任务可以显示工具调用进度
-- 用户取消时可以及时停止后续成本
+一个稳定的流式链路通常要有事件模型：
 
-但 streaming 不能让模型本身变聪明，也不能自动解决超时和错误处理。
+```text
+run_started
+message_delta
+tool_call_started
+tool_call_finished
+error
+done
+```
 
-## 学到什么程度
+不要只传文本。真实 AI 系统里，模型可能先解释计划，再调用工具，再返回工具结果，最后生成答案。前端需要知道每个事件的类型，而不是从一串文本里猜。
 
-先掌握：
+## 最小例子
 
-- 首 token 延迟和完整响应延迟的区别
-- 后端如何把上游模型流转发给前端
-- 为什么需要取消、错误事件和完成事件
-- 什么情况下用 [[SSE]]，什么情况下用 [[WebSocket]]
+后端可以把上游模型事件转换成自己的事件：
 
-不需要一开始研究所有传输协议。把一条链路做通、做稳，再考虑抽象。
+```python
+for event in model_stream:
+    if event.type == "text_delta":
+        yield sse("message_delta", {"text": event.text})
+    elif event.type == "tool_call":
+        yield sse("tool_call_started", {"name": event.name})
 
-## 在项目里怎么出现
+yield sse("done", {})
+```
 
-一个典型链路：
+这层转换很重要。它隔离模型供应商的事件格式，也让前端协议更稳定。
 
-1. 浏览器向后端发起请求
-2. 后端调用模型并开启 stream
-3. 模型逐步返回 token 或事件
-4. 后端通过 [[SSE]] 转发
-5. 前端逐步渲染并允许取消
+## 边界和失败模式
 
-如果任一层把响应缓存起来，用户看到的就不是 streaming，而是一次性返回。
+常见失败包括：
 
-## 资料
+- 反向代理缓冲，流式变成一次性返回。
+- 前端把 delta 当完整消息，导致重复渲染或丢字。
+- 模型输出 Markdown 时，代码块没闭合，UI 抖动。
+- JSON mode 流式输出半截 JSON，前端过早解析。
+- 错误事件没有统一格式，用户只看到连接断开。
+- 用户取消后没有关闭上游模型请求。
 
-- [MDN Streams API](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)：理解浏览器流式处理。
-- [OpenAI API streaming](https://platform.openai.com/docs/api-reference/responses/create)：看模型 API 的 streaming 参数和事件。
+流式响应的完成标准不是“能看到字一个个出来”，而是错误、取消、重连、工具状态和最终结果都能被稳定处理。
+
+## 参考资料
+
+- [MDN Streams API](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)：浏览器流处理基础。
+- [MDN Server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)：SSE 事件流。
+- [[HTTP]]：理解状态码、header、超时和代理行为。

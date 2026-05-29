@@ -1,52 +1,66 @@
 # SSE
 
-SSE，全称 Server-Sent Events，是服务器向浏览器单向推送事件的机制。它基于 HTTP，浏览器原生支持 `EventSource`。
+SSE，全称 Server-Sent Events，是服务器通过 HTTP 向浏览器单向推送事件的机制。浏览器原生提供 `EventSource`，后端只要按事件流格式持续写响应。
 
-在 AI 应用里，SSE 最常见的用途是把模型输出流式推给前端。
+在 AI 应用里，SSE 最常见的用途是把模型输出逐步推给前端。用户不必等完整回答生成完，能更早看到首 token、工具状态或错误事件。
 
-相关概念：
+## 工作机制
 
-- [[HTTP]]
-- [[Streaming Response]]
-- [[Inference]]
-- [[WebSocket]]
+SSE 响应的内容类型通常是 `text/event-stream`。服务端持续写入事件：
 
-## 为什么常用于模型输出
+```text
+event: delta
+data: {"text":"hello"}
 
-模型通常是一个 token 接一个 token 生成。等完整回答生成完再返回，用户会觉得慢。
+event: done
+data: {}
+```
 
-SSE 可以让前端更早看到内容：
+每个事件用空行分隔。前端收到事件后逐步更新 UI。它适合“服务器持续告诉浏览器发生了什么”的场景，不适合高频双向通信。
 
-- 后端收到模型流式输出
-- 后端把 token 或事件逐步转成 SSE
-- 前端逐步渲染文本、状态或工具结果
+## 工程形态
 
-这个链路比 WebSocket 简单，因为大多数场景只需要服务器向浏览器推送。
+一个常见链路是：
 
-## 学到什么程度
+```text
+model stream -> backend parser -> SSE events -> browser renderer
+```
 
-先掌握：
+后端不应该把上游模型事件原样暴露给前端。更稳的做法是定义自己的事件类型，比如 `message_delta`、`tool_started`、`tool_result`、`error`、`done`。这样以后换模型供应商时，前端不需要跟着重写。
 
-- SSE 是单向推送，不适合复杂双向通信
-- 响应头和代理缓冲会影响是否真的流式返回
-- 前端需要处理断线、重连和错误
-- 后端要在用户取消时停止上游模型请求
+## 最小例子
 
-暂时不必背事件格式的所有细节。会查 MDN，能写出稳定链路，就够开始做项目。
+浏览器侧可以这样消费：
 
-## 容易踩坑
+```javascript
+const source = new EventSource("/api/chat/stream");
 
-最常见的问题是“代码看起来用了 stream，浏览器却一次性收到结果”。
+source.addEventListener("message_delta", (event) => {
+  const payload = JSON.parse(event.data);
+  appendText(payload.text);
+});
 
-通常要检查：
+source.addEventListener("done", () => {
+  source.close();
+});
+```
 
-- 框架有没有缓冲响应
-- 反向代理有没有缓冲
-- 响应头是否适合 SSE
-- 后端是否真的边收到模型输出边 flush
-- 前端是不是等完整 body 才渲染
+如果需要发送用户输入，通常先用普通 HTTP POST 创建任务，再用 SSE 监听任务事件。若需要持续双向通信，再考虑 [[WebSocket]]。
 
-## 资料
+## 边界和失败模式
 
-- [MDN Server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)：浏览器侧基础。
-- [OpenAI Streaming API docs](https://platform.openai.com/docs/api-reference/responses/create)：看模型流式输出如何进入后端。
+最常见的问题是“代码用了 stream，但浏览器一次性收到结果”。排查顺序：
+
+- 后端框架是否缓冲响应。
+- Nginx、CDN 或平台网关是否开启缓冲。
+- 响应头是否是 `text/event-stream`。
+- 后端是否在收到上游 token 后及时 flush。
+- 前端是否用了 `fetch().text()` 这类等完整 body 的写法。
+
+还要处理断线重连、用户取消和错误事件。模型输出中途失败时，不要让前端停在半截 loading。
+
+## 参考资料
+
+- [MDN Server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)：浏览器 API 和事件格式。
+- [OpenAI streaming docs](https://platform.openai.com/docs/api-reference/responses/create)：看模型侧流式事件。
+- [[Streaming Response]]：更通用的流式响应设计。

@@ -1,44 +1,67 @@
 # Inference
 
-Inference 是模型已经训练好之后，根据输入生成输出的过程。你调用 LLM API、部署本地模型、做 streaming response，本质上都在使用推理。
+Inference 是模型被用来产生输出的过程。对大语言模型来说，最常见的形式是：给模型一段上下文，让它一个 [[Token]] 接一个 token 生成回答。
 
-相关概念：
+训练改变参数。推理使用已经训练好的参数。应用开发里，大多数成本、延迟、流式输出、限流和失败恢复问题都发生在推理链路上。
 
-- [[Transformer]]
-- [[Token]]
-- [[Context Window]]
-- [[Streaming Response]]
-- [[AI Infra]]
+## 工作机制
 
-## 学到什么程度
+一次生成通常分成两个阶段：
 
-入门阶段要知道：
+- prefill：处理输入上下文，建立 KV cache。
+- decode：逐步生成新 token，每一步都用已有 KV cache。
 
-- 推理不是训练，它使用已有模型参数生成结果
-- 输出通常是一个 token 接一个 token 生成
-- latency、throughput、context length 和成本会互相影响
-- temperature、top_p 这类参数会影响采样，但不能修复任务设计问题
+首 token 延迟主要受 prefill、排队和路由影响。完整回答时间主要受输出长度、decode 速度和并发调度影响。
 
-暂时可以跳过：
+采样参数会改变输出形态。temperature、top_p、max_tokens、stop sequence 这类配置不应该被当成魔法按钮，它们只是控制候选 token 的选择方式和停止条件。
 
-- CUDA kernel 和显存布局
-- KV cache 的具体实现
-- speculative decoding、continuous batching 等推理优化细节
+## 工程形态
 
-做 [[AI Infra]] 时再深入这些内容。做应用时，先能解释为什么模型响应慢、为什么流式输出有价值、为什么超时和取消很重要。
+一个后端推理链路常见结构是：
 
-## 在项目里怎么出现
+```text
+client -> API server -> auth/rate limit -> prompt builder
+       -> model API or self-hosted server
+       -> stream parser -> SSE/WebSocket -> client
+```
 
-常见场景：
+如果是自部署，还会多出模型权重加载、GPU 调度、batching、KV cache 管理、监控和降级策略。[[AI Infra]] 关心的就是这部分。
 
-- 后端调用模型 API，等待首 token 和完整输出
-- 前端用 [[SSE]] 或 [[WebSocket]] 展示流式结果
-- 长 prompt 导致首 token 变慢
-- 并发请求上来后，成本和限流开始变成问题
+## 最小例子
 
-如果你做的是产品，而不是单次 demo，推理体验很快会变成工程问题。
+应用层通常需要把模型调用包成可取消、可重试、可观测的操作：
 
-## 资料
+```python
+with trace("llm_call") as span:
+    stream = client.responses.stream(
+        model=model,
+        input=messages,
+        max_output_tokens=800,
+    )
+    for event in stream:
+        if request_cancelled():
+            stream.close()
+            break
+        yield to_sse(event)
+```
 
-- [OpenAI API docs](https://platform.openai.com/docs)：看模型调用、streaming 和参数说明。
-- [vLLM docs](https://docs.vllm.ai/)：了解开源推理服务的工程问题。
+这里的重点是系统行为：用户取消时要停上游请求；流式事件要可解析；错误要区分鉴权、限流、超时和模型拒答。
+
+## 边界和失败模式
+
+常见失败包括：
+
+- 没有 timeout，慢请求堆满 worker。
+- 用户关闭页面后模型请求仍在运行。
+- 所有错误都显示成“AI 失败”，无法定位 401、429、5xx 或解析错误。
+- 流式输出没有事件边界，前端 Markdown、JSON 或工具状态渲染混乱。
+- 自部署只看 tokens/s，不看排队时间、首 token 延迟和 p95 延迟。
+
+做推理系统时，日志比口头判断可靠。至少记录模型、输入输出 token、延迟、错误类型、trace id 和是否命中缓存。
+
+## 参考项目和资料
+
+- [OpenAI Responses API docs](https://platform.openai.com/docs/api-reference/responses)：看托管模型推理接口。
+- [vLLM quickstart](https://docs.vllm.ai/en/latest/getting_started/quickstart.html)：看 OpenAI-compatible 自部署推理服务。
+- [SGLang documentation](https://docs.sglang.ai/)：看结构化生成和高性能推理。
+- [[Streaming Response]]：把推理结果稳定返回给前端。

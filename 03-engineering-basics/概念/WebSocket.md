@@ -1,54 +1,57 @@
 # WebSocket
 
-WebSocket 是浏览器和服务器之间的双向长连接。它适合需要频繁双向通信的场景，比如协作编辑、实时状态同步、多人应用或复杂 Agent 控制台。
+WebSocket 是浏览器和服务器之间的双向长连接。它适合双方都要持续发消息的场景：协作编辑、实时状态、语音流、复杂 Agent 控制台。
 
-它和 [[SSE]] 都能做实时更新，但适合的问题不同。
+AI 应用里不要一看到“实时”就上 WebSocket。模型文本流式输出通常用 [[SSE]] 更简单。WebSocket 的价值在于双向、低延迟、长会话和更细粒度的控制。
 
-相关概念：
+## 工作机制
 
-- [[SSE]]
-- [[Streaming Response]]
-- [[Agent]]
-- [[Tool Use]]
+WebSocket 先通过 HTTP 完成握手，然后升级成持久连接。连接建立后，浏览器和服务器都可以主动发送消息。
 
-## 什么时候需要
+```text
+browser <==== persistent connection ====> backend
+```
 
-如果只是把模型输出从后端流到前端，[[SSE]] 往往更简单。
+这和普通 HTTP 请求不同。你需要自己处理连接生命周期、心跳、重连、鉴权、消息协议和背压。
 
-WebSocket 更适合这些情况：
+## 工程形态
 
-- 前端要不断发送控制消息，比如暂停、继续、取消
-- 后端要推送多类事件，不只是 token
-- [[Agent]] 有长任务状态、工具调用进度和人工确认
-- 多用户或多端需要共享实时状态
+适合 WebSocket 的 AI 场景：
 
-不要为了“看起来高级”使用 WebSocket。它会增加连接管理、鉴权、重连和状态同步复杂度。
+- 语音助手：客户端上传音频片段，服务端返回识别、模型输出和语音合成状态。
+- Agent 工作台：前端发送暂停、继续、批准工具调用等指令，服务端推送步骤日志。
+- 多人协作：多个用户同时看同一个 AI 任务状态。
+- 需要低延迟双向信令的工具调用。
 
-## 学到什么程度
+不适合的场景也很常见：一个普通聊天框，只要把模型回答流式显示出来，用 SSE 或 streaming fetch 就够了。
 
-先理解：
+## 最小协议
 
-- HTTP 请求如何升级成 WebSocket
-- 连接断开和重连怎么处理
-- 消息需要自己定义类型和格式
-- 长连接也需要鉴权和权限检查
-- 服务端要考虑连接数量和资源释放
+不要直接在 WebSocket 里随便发字符串。至少定义事件类型：
 
-暂时不必深挖底层帧格式。先能把实时交互做稳。
+```json
+{"type":"user_message","text":"帮我总结这份文档"}
+{"type":"tool_approval","run_id":"r1","approved":true}
+{"type":"agent_step","run_id":"r1","status":"running","title":"search docs"}
+{"type":"error","code":"rate_limited"}
+```
 
-## 在 AI 项目里怎么出现
+协议一旦被前端和后端共同依赖，就要保持向后兼容。否则调试会变成猜消息格式。
 
-一个 Agent 控制台可能会用 WebSocket 传这些事件：
+## 边界和失败模式
 
-- 模型开始思考
-- 准备调用工具
-- 工具执行完成
-- 等待用户确认
-- 任务失败或被取消
+常见失败包括：
 
-这时它不是单纯的“流式文本”，而是一个事件系统。
+- 连接断了但后端任务继续跑，前端无法恢复状态。
+- 鉴权只在握手时做，长连接期间权限变化没有处理。
+- 没有心跳，代理悄悄断开连接。
+- 消息没有 `run_id`，多个任务事件混在一起。
+- 用 WebSocket 传大文件或大日志，阻塞其他事件。
 
-## 资料
+WebSocket 更像实时系统组件，不是 HTTP 的简单替代品。用它之前先确认你真的需要双向通信。
 
-- [MDN WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)：看浏览器侧接口。
-- [RFC 6455](https://www.rfc-editor.org/rfc/rfc6455)：需要查协议细节时再看。
+## 参考资料
+
+- [MDN WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)：浏览器侧基础。
+- [RFC 6455](https://www.rfc-editor.org/rfc/rfc6455)：协议定义，需要精确行为时查。
+- [[SSE]]：单向模型输出的更简单选择。
