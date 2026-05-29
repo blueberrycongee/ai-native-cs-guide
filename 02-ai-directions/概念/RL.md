@@ -35,6 +35,8 @@ RL 的难点不只是算法。更难的是定义环境、动作、奖励和评�
 
 暂时不必先刷完所有传统 RL 算法。Q-learning、policy gradient、actor-critic 这些重要，但如果没有应用场景，很容易变成只背名词。
 
+更完整的路径入口见 [[RL 路径]]。
+
 ## 资料
 
 - [Sutton and Barto: Reinforcement Learning](http://incompleteideas.net/book/the-book-2nd.html)：经典教材，适合系统学习。

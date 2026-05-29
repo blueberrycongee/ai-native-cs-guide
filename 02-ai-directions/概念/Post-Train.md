@@ -45,6 +45,8 @@ Post-Train 是模型预训练之后，让模型更适合人类任务和产品场
 - 做领域模型时考虑微调还是 [[RAG]]
 - 设计 eval 数据集来检查模型升级后的变化
 
+更完整的路径入口见 [[Post-Train 路径]]。
+
 ## 资料
 
 - [InstructGPT paper](https://arxiv.org/abs/2203.02155)：理解 RLHF 在指令模型里的作用。

@@ -1,6 +1,6 @@
 # AI 方向地图
 
-这个仓库先把 AI 相关方向分成五条主线：[[Agent]]、[[AI Infra]]、[[Pre-Train]]、[[Post-Train]] 和 [[RL]]。
+这个仓库先把 AI 相关方向分成五条主线：[[Agent 方向]]、[[AI Infra]]、[[Pre-Train]]、[[Post-Train]] 和 [[RL]]。
 
 它们不是互斥专业。真实项目里经常交叉。分开的目的只是为了让初学者先知道自己在学什么，不要把应用开发、模型训练、推理部署和强化学习混成一团。
 
@@ -21,7 +21,7 @@
 
 ### Agent
 
-[[Agent]] 关心的是模型如何围绕目标使用上下文、工具和反馈循环工作。
+[[Agent 方向]] 关心的是模型如何围绕目标使用上下文、工具和反馈循环工作。
 
 适合先做项目的人。你可以从一个很小的 coding agent、资料整理 agent 或工具调用 agent 开始，很快会碰到 [[Prompting]]、[[Tool Use]]、[[Context Engineering]]、[[RAG]] 和 [[Evals]]。
 
