@@ -22,9 +22,25 @@
 
 ## 核心方法论
 
-### 1. 按路径组织，而不是按概念堆叠
+### 1. 先给学习顺序，再按路径分流
 
-仓库的主线应该是具体路径，例如 Agent、RAG、AI 工具、AI 产品工程、AI Research Engineering 等。
+仓库需要有明确的推荐学习顺序，不能完全依赖读者自己在网状笔记里摸索。
+
+前几层应该按 `01`、`02` 这种顺序组织：
+
+- 先理解 AI 的公共基石：Transformer、Attention、token、embedding、context window、inference 等
+- 再理解 AI 行业有哪些主要方向：Agent、AI Infra、Pre-Train、Post-Train、RL 等
+- 然后再进入具体方向的学习路径、项目路线、开源项目和概念地图
+
+这不是要写成传统教材式线性课程。更准确的结构是：前置认知有顺序，方向学习可分流。
+
+路径仍然重要，但路径不应该出现在读者还不知道 AI 方向版图之前。
+
+仓库的主线应该是：
+
+```text
+公共基石 -> AI 方向地图 -> 具体方向路径 -> 项目和资源
+```
 
 概念不是越多越好。只有当某个概念能帮助读者完成路径里的判断、项目或代码理解时，才值得写。
 
@@ -84,7 +100,7 @@
 README.md
 GOAL.md
 
-foundations/
+01-foundations/
   概念/
     Transformer.md
     Attention.md
@@ -93,7 +109,16 @@ foundations/
     Context Window.md
     Inference.md
 
-ai-systems/
+02-ai-directions/
+  AI 方向地图.md
+  概念/
+    Agent.md
+    AI Infra.md
+    Pre-Train.md
+    Post-Train.md
+    RL.md
+
+03-ai-systems/
   概念/
     LLM.md
     Prompting.md
@@ -104,7 +129,7 @@ ai-systems/
     Cost.md
     Prompt Cache.md
 
-agents/
+04-agents/
   Agent.md
   Agent 信息来源.md
   Agent 开源项目.md
@@ -116,14 +141,20 @@ agents/
     Skills.md
     Single Agent vs Multi-Agent.md
 
-workflow/
-products/
-projects/
-resources/
+05-ai-infra/
+06-pre-train/
+07-post-train/
+08-rl/
+09-projects/
+90-resources/
 ```
 
 这个结构不是最终定案，但有几个当前决策：
 
+- 仓库要改成带学习顺序的编号目录，不再坚持完全非线性组织
+- `01-foundations` 先讲所有方向共用的 AI 基石
+- `02-ai-directions` 负责讲清楚 AI 行业的主要方向，让读者先知道有哪些路可以走
+- Agent、AI Infra、Pre-Train、Post-Train、RL 是当前优先纳入方向地图的几条线
 - `agents/概念` 只放 Agent 特有或强相关概念
 - `Cost`、`Evals`、`Security` 这类横切问题不属于 Agent 核心目录
 - `AI Product` 不属于 Agent 核心目录
@@ -160,8 +191,9 @@ resources/
 
 ## 待处理问题
 
-- 是否新增 `foundations/`，专门放 Transformer、Attention、token、embedding 等公共基础
-- `ai-systems/` 是否是合适命名，还是应该叫 `common/`、`core/`、`ai-core/`
+- 编号目录的最终命名是否采用 `01-foundations`，还是使用中文名加编号
+- `03-ai-systems/` 是否是合适命名，还是应该叫 `03-common-systems/`、`03-ai-core/`
 - 每条就业路径应该如何命名
 - Agent 方向是否先只保留 `Skills.md`，其它概念页后续重写
-- README 的目录规划需要和新的目标结构同步
+- README 目前说“不会按 `01`、`02` 这种线性章节组织”，这和新判断冲突，需要后续同步修改
+- `AI Infra`、`Pre-Train`、`Post-Train`、`RL` 每条线的边界需要继续定义
