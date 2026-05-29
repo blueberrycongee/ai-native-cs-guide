@@ -38,6 +38,41 @@
 
 这些要求优先级高于目录结构。目录可以调整，但不能用“结构已经有了”替代内容完成。
 
+### 方向目录完整性要求
+
+每条重点方向不能只有一个路径页。路径页只回答“怎么进入这个方向”，不能替代概念、项目、信息来源和工具框架说明。
+
+当前重点方向包括：
+
+- Agent
+- AI Infra
+- Pre-Train
+- Post-Train
+- RL
+
+每个重点方向目录最终至少要有这些文档：
+
+- 方向首页：说明这个方向解决什么问题，和其他方向的边界是什么，读者应该如何进入。
+- 路径页：说明学习顺序、必做项目、参考项目、工程实践清单、必学知识、阶段验收标准和继续深入入口。
+- 概念地图或概念目录：列出这个方向内部反复出现的核心概念，并链接到教程页。不要只列名词，要说明概念之间如何连接。
+- 信息来源页：列出官方文档、论文、release note、技术博客、issue、discussion、社区讨论等信息源，并说明每类来源适合用来判断什么。
+- 开源项目页：列出值得研究的真实项目或代码库，说明它代表哪类系统形态、先看哪些模块、example、issue、PR 或源码入口。
+- 框架和工具页：明确这个方向必须认识哪些框架、库、平台、工具或服务；哪些需要会用，哪些需要读源码，哪些只需要知道存在。
+- 项目路线页或项目小节：给出至少一个必做项目和一个进阶项目，说明最小可做版本、关键实现步骤、常见失败点、验收标准。
+
+如果某个方向暂时没有足够内容，宁可标成未完成，也不要只留下一个“路径.md”然后说这个方向已经完成。
+
+Agent 当前已经有相对完整的目录。AI Infra、Pre-Train、Post-Train、RL 也必须补到同等结构，不能只用 `AI Infra 路径.md`、`Pre-Train 路径.md`、`Post-Train 路径.md`、`RL 路径.md` 代替整个方向。
+
+每个非 Agent 方向至少要补齐：
+
+- `信息来源.md`
+- `开源项目.md`
+- `框架和工具.md`
+- `概念/` 下的核心教程页
+
+这些文档要互相链接。方向首页链接路径、信息来源、开源项目、框架工具和核心概念；项目页链接概念和外部项目；概念页链接项目和路径。不要形成孤立页面。
+
 ## 写作前调研工作流
 
 写方向文档、项目路线、资源索引或开源项目分析前，必须先调研，再写文档。不能凭印象列项目，也不能只根据自己已经知道的几个工具下结论。
@@ -269,9 +304,58 @@ GOAL.md
     Single Agent vs Multi-Agent.md
 
 06-ai-infra/
+  AI Infra.md
+  AI Infra 路径.md
+  AI Infra 信息来源.md
+  AI Infra 开源项目.md
+  AI Infra 框架和工具.md
+  概念/
+    Inference Serving.md
+    Model Gateway.md
+    Observability.md
+    Model Routing.md
+    GPU Basics.md
+
 07-pre-train/
+  Pre-Train.md
+  Pre-Train 路径.md
+  Pre-Train 信息来源.md
+  Pre-Train 开源项目.md
+  Pre-Train 框架和工具.md
+  概念/
+    Training Loop.md
+    Dataset Pipeline.md
+    Tokenizer Training.md
+    Checkpoint.md
+    Distributed Training.md
+
 08-post-train/
+  Post-Train.md
+  Post-Train 路径.md
+  Post-Train 信息来源.md
+  Post-Train 开源项目.md
+  Post-Train 框架和工具.md
+  概念/
+    SFT.md
+    Preference Optimization.md
+    RLHF.md
+    DPO.md
+    GRPO.md
+    Reward Model.md
+
 09-rl/
+  RL.md
+  RL 路径.md
+  RL 信息来源.md
+  RL 开源项目.md
+  RL 框架和工具.md
+  概念/
+    Environment.md
+    Policy.md
+    Reward.md
+    PPO.md
+    Offline RL.md
+
 10-projects/
 90-resources/
 ```
