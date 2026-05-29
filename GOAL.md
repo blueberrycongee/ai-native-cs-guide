@@ -154,7 +154,6 @@ GOAL.md
 - `agents/概念` 只放 Agent 特有或强相关概念
 - `AI Product` 不属于 Agent 核心目录
 - `Workflow` 和 `Human in the Loop` 更像流程或产品化内容，不放在 Agent 核心概念里
-- `State` 先不作为独立概念文档，因为它更适合结合具体代码和系统实现讲
 - `Skills.md` 当前可以保留，因为它已经有比较具体的方法论和系统设计取舍
 
 ## 内容质量标准
