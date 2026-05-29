@@ -8,7 +8,8 @@ AI Infra 关注 AI 系统能不能稳定、可观测、可控成本地运行。�
 2. 做模型调用网关，记录 token、延迟、错误和 trace。
 3. 加入 [[API Auth]]、超时、取消、重试和配额。
 4. 用 [[Evals]] 比较模型版本、prompt 版本和上下文策略。
-5. 再看自部署推理：vLLM、SGLang、Ray Serve、KServe。
+5. 读 [[Inference Serving]]、[[Model Gateway]]、[[Observability]]、[[Model Routing]] 和 [[GPU Basics]]。
+6. 再看自部署推理：vLLM、SGLang、Ray Serve、KServe。
 
 没有真实流量前，不要先搭复杂平台。先把一个小服务做稳。
 
@@ -33,6 +34,8 @@ AI Infra 关注 AI 系统能不能稳定、可观测、可控成本地运行。�
 - [Ray Serve](https://docs.ray.io/en/latest/serve/index.html)：代表可组合、可扩缩的 Python 模型服务。先看 Serve 和 Serve LLM。
 - [KServe](https://kserve.github.io/kserve/)：代表 Kubernetes 上的模型服务抽象。先看 InferenceService、ServingRuntime 和 generative inference。
 - [llama.cpp](https://github.com/ggml-org/llama.cpp)：代表本地推理、量化和 GGUF 生态。先看 server、quantization 和 examples。
+
+更详细的项目阅读入口见 [[AI Infra 开源项目]]。工具分层见 [[AI Infra 框架和工具]]。信息跟踪方式见 [[AI Infra 信息来源]]。
 
 ## 工程实践清单
 
