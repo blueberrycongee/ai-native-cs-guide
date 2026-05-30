@@ -127,6 +127,21 @@ retry: 3000
 - 跨域 SSE 要按 CORS 处理；如果要带 cookie，需要创建 `new EventSource(url, { withCredentials: true })`，服务端也要返回正确的 CORS header。
 - HTTP/1.1 下浏览器对同一 origin 的并发连接数有限。多个页面或多个 SSE 连接可能互相占用连接名额。
 
+## 和 WebSocket 对照
+
+SSE 和 [[WebSocket]] 都能做实时更新，但通信模型不同。SSE 是服务端到客户端的事件流；WebSocket 是双向长连接。
+
+| 维度 | SSE | WebSocket |
+| --- | --- | --- |
+| 通信方向 | 服务端到客户端单向 | 客户端和服务端双向 |
+| 协议形态 | HTTP 长响应，`text/event-stream` | HTTP 握手后升级为 WebSocket 协议 |
+| 浏览器 API | `EventSource` | `WebSocket` |
+| 数据格式 | 文本事件流，`event/data/id/retry` | text/binary message，业务格式自定义 |
+| 自动重连 | `EventSource` 内置重连 | 需要应用自己实现 |
+| 典型 AI 场景 | 模型文本流、任务进度、服务端事件 | 语音流、Agent 控制台、双向实时协作 |
+
+普通模型文本流优先用 SSE。需要客户端持续发送实时控制、音频或协作编辑事件，再看 [[WebSocket]]。
+
 ## 边界和失败模式
 
 最常见的问题是“代码用了 stream，但浏览器一次性收到结果”。排查顺序：
