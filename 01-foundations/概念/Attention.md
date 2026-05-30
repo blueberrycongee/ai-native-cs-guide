@@ -16,11 +16,57 @@ Attention 解决的问题很具体：模型处理某个 token 时，应该从上
   得到当前位置的新表示
 ```
 
-多头注意力把这个过程并行做多次。不同 head 可以学习不同关系，但不要急着把某个 head 解释成“语法 head”或“事实 head”。真实模型里的行为没有这么整齐。
+## 基本公式
+
+在 self-attention 里，输入是一段 token 的 hidden states，记作：
+
+$$
+X \in \mathbb{R}^{n \times d_{\text{model}}}
+$$
+
+其中 \(n\) 是序列长度，\(d_{\text{model}}\) 是每个 token 表示的维度。模型会把同一份 \(X\) 投影成 query、key、value：
+
+$$
+Q = XW_Q,\quad K = XW_K,\quad V = XW_V
+$$
+
+scaled dot-product attention 的核心公式是：
+
+$$
+\operatorname{Attention}(Q, K, V) =
+\operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V
+$$
+
+这里 \(QK^\top\) 得到每个 query 对所有 key 的相似度，\(\sqrt{d_k}\) 用来缩放分数，避免维度变大后 softmax 过于尖锐。\(M\) 是可选 mask；在解码模型里，causal mask 会把未来 token 的位置设成 \(-\infty\)，让当前位置只能看见自己和过去。
+
+从单个位置 \(i\) 看，就是：
+
+$$
+\alpha_i =
+\operatorname{softmax}\left(\frac{q_iK^\top}{\sqrt{d_k}} + m_i\right),
+\quad
+o_i = \alpha_iV
+$$
+
+\(\alpha_i\) 是当前位置对上下文各位置的权重，\(o_i\) 是加权读取 value 之后的新表示。
+
+多头注意力把这个过程并行做多次：
+
+$$
+\operatorname{head}_r =
+\operatorname{Attention}(XW_r^Q, XW_r^K, XW_r^V)
+$$
+
+$$
+\operatorname{MultiHead}(X) =
+\operatorname{Concat}(\operatorname{head}_1,\ldots,\operatorname{head}_h)W_O
+$$
+
+不同 head 可以学习不同关系，但不要急着把某个 head 解释成“语法 head”或“事实 head”。真实模型里的行为没有这么整齐。
 
 ## 工程形态
 
-Attention 的工程影响比公式更早出现：
+公式之外，Attention 还会直接影响系统工程：
 
 - 上下文变长，prefill 阶段会变慢。
 - KV cache 让 decode 更快，但会随序列长度和并发数占显存。
@@ -35,7 +81,7 @@ Attention 的工程影响比公式更早出现：
 下面是注意力的概念版，不处理 batch、多头、mask 和数值稳定：
 
 ```python
-scores = query @ keys.T
+scores = (query @ keys.T) / sqrt(d_k)
 weights = softmax(scores)
 output = weights @ values
 ```
