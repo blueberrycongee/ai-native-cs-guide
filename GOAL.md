@@ -374,10 +374,21 @@ GOAL.md
     LLM.md
     Prompting.md
     Context Engineering.md
-    RAG.md
     Prompt Cache.md
     Cost.md
     Security.md
+  rag/
+    RAG.md
+    RAG 工程架构.md
+    RAG 评测.md
+    RAG 开源项目.md
+    概念/
+      Chunking.md
+      Hybrid Search.md
+      Reranking.md
+      Citation.md
+      Metadata Filtering.md
+      Query Rewrite.md
 
 05-projects/
 06-papers/
