@@ -19,9 +19,9 @@ Memory 是 Agent 保存和使用历史信息的机制。它可以是当前任务
 
 ```json
 {
-  "read_files": ["README.md", "GOAL.md"],
-  "open_questions": ["缺少 AI Infra 项目验收标准"],
-  "evidence": [{"file": "GOAL.md", "line": 12}],
+  "read_files": ["README.md", "02-ai-directions/agent/Agent.md"],
+  "open_questions": ["缺少 AI Infra 信息来源"],
+  "evidence": [{"file": "02-ai-directions/agent/Agent.md", "line": 7}],
   "last_error": null
 }
 ```
