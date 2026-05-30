@@ -1,6 +1,6 @@
 # Agent 开源项目
 
-Agent 方向的开源项目大致分成 coding agent、personal agent 和 orchestration framework。
+Agent 方向的开源项目大致分成 coding agent、personal agent、memory / state 和 orchestration framework。
 
 ## Coding Agent
 
@@ -32,6 +32,15 @@ OpenClaw 更接近 personal agent platform。它关注常驻 Agent 如何接入�
 - Docs：[hermes-agent.nousresearch.com/docs](https://hermes-agent.nousresearch.com/docs)
 
 Hermes Agent 是 self-hosted / skill-based agent。它把 skills、memory、messaging gateway、MCP、自托管部署和长期上下文放在同一个系统里，和单纯的聊天界面不是同一种问题。
+
+## Memory / State
+
+### Mem0
+
+- GitHub：[mem0ai/mem0](https://github.com/mem0ai/mem0)
+- Docs：[docs.mem0.ai](https://docs.mem0.ai/)
+
+Mem0 是面向 AI Agents 的 memory layer。它把长期信息抽取、用户 / 会话作用域、metadata、向量检索、冲突处理和 add / search / update / delete 操作做成独立系统，可以作为 Agent runtime 之外的 memory provider 使用。
 
 ## Agent Framework / Orchestration
 

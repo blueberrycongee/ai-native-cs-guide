@@ -29,7 +29,7 @@ output contract
 - prompt builder：把不同来源拼成模型输入。
 - retriever：为 [[RAG]] 找证据。
 - summarizer：压缩历史对话或长工具输出。
-- memory store：保存长期偏好、事实或任务状态。
+- memory / state store：不同系统里可能是 checkpoint、workspace 文件、向量索引或外部 memory provider。
 - policy layer：决定哪些内容不能进 prompt。
 - eval set：比较不同上下文策略的效果。
 
@@ -67,4 +67,4 @@ Context engineering 的完成标准不是“prompt 很完整”，而是系统�
 
 - [Anthropic Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval)：看给 chunk 补上下文的一种检索策略。
 - [OpenAI prompt caching](https://platform.openai.com/docs/guides/prompt-caching)：理解稳定前缀如何影响成本和延迟。
-- [[Memory]]：Agent 长期状态的设计问题。
+- [[Memory]]：Hermes Agent、OpenClaw、Mem0、LangGraph 等具体 memory 实现入口。

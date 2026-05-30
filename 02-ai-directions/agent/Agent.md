@@ -28,7 +28,7 @@ Agent 的重点不在“模型能不能回答”，而在系统如何把模型�
 - [[Agent Loop]]：目标、模型输出、工具调用、环境反馈和停止条件如何组成循环。
 - [[Tool Use]]：模型如何选择工具，代码如何校验参数、执行工具和返回结果。
 - [[Context Engineering]]：系统如何选择放进上下文的文件、消息、工具结果和中间状态。
-- [[Memory]]：哪些信息需要跨会话保留，哪些只属于当前任务。
+- [[Memory]]：Hermes Agent、OpenClaw、Mem0、LangGraph 等 memory 实现入口。
 - [[Skills]]：可复用能力如何被组织、声明、加载和调用。
 - [[Single Agent vs Multi-Agent]]：什么时候一个 Agent 足够，什么时候需要多个执行单元协作。
 - [[ReAct]]：reasoning 与 acting 交替出现的早期研究范式，以及它和今天工程实现之间的差异。

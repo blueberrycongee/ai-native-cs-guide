@@ -1,46 +1,54 @@
 # Memory
 
-Memory 是 Agent 保存和使用历史信息的机制。它可以是当前任务状态，也可以是跨会话的长期信息。
+Memory 在 Agent 系统里不是一个单一组件。它可能是 prompt bootstrap 文件、运行时 checkpoint、检索索引、用户画像、session 摘要、工具结果缓存，也可能是外部 memory provider。把它抽象成“短期记忆 / 长期记忆”很快会失真。
 
-先别把 memory 神秘化。很多时候，一个结构化任务状态比复杂向量记忆更有用。
+这页先作为具体实现的入口。
 
-## 工作机制
+## Hermes Agent Memory
 
-常见记忆分两类：
+- [MemoryManager](https://github.com/NousResearch/hermes-agent/blob/main/agent/memory_manager.py)
+- [MemoryProvider](https://github.com/NousResearch/hermes-agent/blob/main/agent/memory_provider.py)
 
-- 短期记忆：当前任务目标、已读文件、工具结果、待办步骤、失败原因。
-- 长期记忆：用户偏好、项目规则、历史决策、常用路径。
+Hermes Agent 把 memory 放在 provider 抽象下。provider 可以在启动时初始化，在 turn 前 prefetch，在上下文压缩前提取信息，在 turn 后同步写入，也可以向模型暴露 memory 工具。
 
-短期记忆通常属于 run state。长期记忆需要权限、隐私、删除和过期策略。
+相关问题集中在 provider 生命周期、session scope、外部 provider 数量限制、memory context 注入和清理。
 
-## 工程形态
+## OpenClaw Memory
 
-资料整理 Agent 可以保存：
+- [OpenClaw Memory overview](https://github.com/openclaw/openclaw/blob/main/docs/concepts/memory.md)
+- [memory-core](https://github.com/openclaw/openclaw/tree/main/extensions/memory-core)
 
-```json
-{
-  "read_files": ["README.md", "02-ai-directions/agent/Agent.md"],
-  "open_questions": ["缺少 AI Infra 信息来源"],
-  "evidence": [{"file": "02-ai-directions/agent/Agent.md", "line": 7}],
-  "last_error": null
-}
-```
+OpenClaw 的 memory 不像隐藏状态，更像 workspace 里的可读文件层和可插拔检索层。它把 `MEMORY.md`、`memory/YYYY-MM-DD.md`、`DREAMS.md` 放在 agent workspace 里，再通过 active memory plugin 提供 search / get、索引、召回和后端适配。
 
-这些状态比把全部历史消息塞回 prompt 更可靠，也更容易调试。
+相关问题集中在文件层、索引层、prompt 注入、daily note 到 durable memory 的蒸馏，以及 Memory Wiki 这种带证据的知识层。
 
-## 边界和失败模式
+## Mem0
 
-常见失败包括：
+- [mem0ai/mem0](https://github.com/mem0ai/mem0)
+- [Mem0 memory types](https://docs.mem0.ai/core-concepts/memory-types)
+- [Mem0 memory operations](https://docs.mem0.ai/core-concepts/memory-operations/add)
 
-- 长期记忆没有来源，错误信息被反复使用。
-- 记住用户隐私却没有删除机制。
-- 把 memory 当事实来源，不做验证。
-- 向量记忆召回相似但不相关的旧信息。
-- 任务状态只存在对话里，断线后无法恢复。
+Mem0 是专门面向 AI Agents 的 memory layer。它把 memory 做成独立系统，围绕 add / search / update / delete、`user_id` / `run_id` 作用域、metadata、LLM 抽取、冲突处理、向量检索和 managed API / OSS 部署组织。
 
-短期状态、摘要和证据引用通常比复杂长期记忆更基础。长期记忆一旦做错，会把错误信息带进后续任务。
+相关问题集中在“从对话里抽取什么”、如何处理重复和冲突、memory 的作用域如何进入检索，以及外部 memory layer 和 Agent runtime 之间的边界。
 
-## 参考资料
+## LangGraph Memory / Persistence
 
-- [MemGPT paper](https://arxiv.org/abs/2310.08560)：看长期上下文和记忆管理的一种研究路线。
-- [LangGraph memory docs](https://docs.langchain.com/oss/python/langgraph/memory)：看 short-term 和 long-term memory 的工程抽象。
+- [LangGraph memory](https://docs.langchain.com/oss/python/concepts/memory)
+- [LangGraph persistence](https://docs.langchain.com/oss/python/langgraph/persistence)
+
+LangGraph 里的 memory 和 persistence 更接近 graph state、checkpoint、store 和 durable execution。它关注一个 agent / workflow 在多个 step、human-in-the-loop、失败恢复和调试过程里如何保存状态。
+
+相关问题集中在 checkpoint、thread state、store、time travel debugging、人类介入和 memory 之间的关系。
+
+## 容易混在一起的东西
+
+同样叫 memory，实际可能指不同对象：
+
+- 当前上下文里的 conversation history。
+- Agent loop 的 run state 或 graph checkpoint。
+- 用户、组织或 workspace 级别的长期信息。
+- 用向量库、全文索引或 hybrid search 做的召回层。
+- 日志、trace、工具结果和证据引用。
+
+所以这里按具体项目组织：Hermes Agent Memory、OpenClaw Memory、Mem0、LangGraph Memory，而不是写一篇统一的 Memory 概论。

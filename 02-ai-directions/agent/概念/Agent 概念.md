@@ -20,7 +20,7 @@ Agent 的基本结构是 [[Agent Loop]]：目标、上下文、模型、工具�
 
 [[Tool Use]] 是 Agent 区别于普通聊天机器人的关键。模型生成文本不危险，模型驱动工具执行动作才危险。
 
-学习时重点看：
+这里涉及几个具体问题：
 
 - 工具输入输出是否结构化
 - 工具调用前是否有权限检查
@@ -35,9 +35,7 @@ Agent 的基本结构是 [[Agent Loop]]：目标、上下文、模型、工具�
 
 ## 状态和记忆
 
-[[Memory]] 解决跨步骤、跨会话的信息保留问题。
-
-当前任务状态、工具结果和关键决策记录清楚之后，长期记忆才有稳定的来源。长期记忆一旦做错，会把错误信息带进后续任务。
+跨步骤状态和跨会话记忆最好放到具体系统里看。[[Memory]] 这里只作为实现索引，串起 Hermes Agent 的 provider、OpenClaw 的 workspace / memory-core、Mem0 的 memory layer 和 LangGraph 的 checkpoint / persistence。
 
 ## 单 Agent 和多 Agent
 

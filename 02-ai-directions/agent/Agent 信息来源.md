@@ -1,6 +1,6 @@
 # Agent 信息来源
 
-Agent 方向的资料入口分成 coding agent、personal agent、论文和平台文档几类。
+Agent 方向的资料入口分成 coding agent、personal agent、memory / state、论文和平台文档几类。
 
 ## Coding Agent
 
@@ -15,6 +15,15 @@ Agent 方向的资料入口分成 coding agent、personal agent、论文和平�
 - [OpenClaw Docs](https://docs.openclaw.ai/)：OpenClaw 的 channels、skills、安全和运行模型。
 - [Hermes Agent GitHub](https://github.com/NousResearch/hermes-agent)：skills、memory、messaging gateway、自托管 Agent 和持续学习方向。
 - [Hermes Agent Docs](https://hermes-agent.nousresearch.com/docs)：Hermes 的 CLI、tools、skills、memory、MCP 和架构文档。
+
+## Memory / State
+
+- [Hermes Agent MemoryManager](https://github.com/NousResearch/hermes-agent/blob/main/agent/memory_manager.py)：provider 生命周期、prefetch、turn 后同步、上下文压缩前提取和 memory context 清理。
+- [OpenClaw Memory overview](https://github.com/openclaw/openclaw/blob/main/docs/concepts/memory.md)：workspace 文件、daily note、durable memory、active memory plugin 和 memory backends。
+- [Mem0 GitHub](https://github.com/mem0ai/mem0)：面向 AI Agents 的通用 memory layer。
+- [Mem0 memory types](https://docs.mem0.ai/core-concepts/memory-types)：conversation、session、user 和 organization memory 的分层。
+- [LangGraph memory](https://docs.langchain.com/oss/python/concepts/memory)：LangGraph 对 short-term / long-term memory 的抽象。
+- [LangGraph persistence](https://docs.langchain.com/oss/python/langgraph/persistence)：checkpoint、thread state、human-in-the-loop 和失败恢复。
 
 ## 论文和经典材料
 
