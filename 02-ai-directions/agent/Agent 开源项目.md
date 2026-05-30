@@ -1,8 +1,6 @@
 # Agent 开源项目
 
-这页列 Agent 方向的开源项目入口。
-
-这里不做排序，也不判断项目优劣。每个项目只记录它代表的系统形态和相关主题。
+Agent 方向的开源项目可以按系统形态分成 coding agent、personal agent 和 orchestration framework。
 
 ## Coding Agent
 

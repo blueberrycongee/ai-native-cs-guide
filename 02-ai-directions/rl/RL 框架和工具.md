@@ -1,34 +1,29 @@
 # RL 框架和工具
 
-RL 工具要按阶段选。先用小环境和可读实现建立概念，再用可靠库做 baseline，最后才看分布式框架。
+RL 工具可以按环境、算法实现、baseline、分布式训练和大模型后训练来整理。
 
-## 必须会用
+## 环境
 
-- Gymnasium：能跑环境，能写自定义环境。
-- Stable-Baselines3：能训练、保存、加载和评测一个 baseline。
-- CleanRL：能读一个单文件算法实现，知道 rollout、advantage、loss 在哪里。
-
-## 必须理解
-
-- RLlib：理解 env runner、learner、多 agent、offline RL，但不必一开始使用。
-- TensorBoard 或 Weights & Biases：记录 reward、loss、episode length、eval metrics。
+- Gymnasium：强化学习环境 API、自定义环境、状态、动作和终止条件。
 - PettingZoo：多 agent 环境接口。
-- TRL/OpenRLHF：理解大模型 post-training 里的 RL 路径。
-- verl：理解 actor、rollout、reference、reward worker 如何组成大模型 RL 数据流，重点看 GRPO/PPO trainer、vLLM/SGLang rollout、remove padding 和 sequence parallel。
-
-## 只需知道存在
-
 - Brax、MuJoCo、Isaac Gym：物理仿真环境。
-- CORL：offline RL 单文件实现。
 - OpenSpiel：博弈和多 agent 研究环境。
 
-## 学习顺序
+## 算法实现和 baseline
 
-1. Gymnasium basic usage。
-2. Stable-Baselines3 训练 PPO。
-3. CleanRL 读 PPO 单文件实现。
-4. 修改 reward，观察策略变化。
-5. 再读 RLlib 或 TRL/OpenRLHF。
-6. 如果目标是 LLM RL Infra，读 [[LLM RL Infra]]，然后挑 TRL、OpenRLHF 或 verl 中一个框架，把 rollout buffer 和 loss 计算走一遍。
+- CleanRL：单文件算法实现，相关主题包括 rollout、advantage、loss 和实验日志。
+- Stable-Baselines3：常用 baseline、训练、保存、加载和评测。
+- CORL：offline RL 单文件实现。
 
-工具不是重点。重点是你能解释环境、奖励和策略为什么产生当前行为。
+## 分布式和生产形态
+
+- RLlib：env runner、learner、多 agent、offline RL 和分布式训练。
+- TensorBoard / Weights & Biases：reward、loss、episode length 和 eval metrics。
+
+## 大模型 RL
+
+- TRL：语言模型 post-training 中的 PPO、GRPO 和 reward model。
+- OpenRLHF：RLHF/GRPO、Ray、vLLM 和分布式训练。
+- verl：actor、rollout、reference、reward worker、GRPO/PPO trainer、vLLM/SGLang rollout、remove padding 和 sequence parallel。
+
+相关系统视角见 [[LLM RL Infra]]。

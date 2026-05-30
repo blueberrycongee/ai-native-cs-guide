@@ -4,7 +4,7 @@
 
 这篇论文的价值不只是提出了 Transformer。它把序列建模从“按时间步递归处理”推进到“在同一层里并行读取整段上下文”，让后来的大规模语言模型训练、长上下文推理和高吞吐服务都站在了一个新的结构基础上。
 
-如果你只想理解今天的大语言模型，先不要从完整公式推导开始。先抓住一个问题：给定一串 [[Token]]，模型如何让每个位置高效读取其他位置的信息，并继续预测下一个 token。
+这篇论文可以从一个问题进入：给定一串 [[Token]]，模型如何让每个位置高效读取其他位置的信息，并继续预测下一个 token。
 
 ## 论文解决的问题
 
@@ -51,24 +51,22 @@ tokens
 - [[Inference Serving]]：KV cache、batching、分页和调度都来自 Transformer 推理形态。
 - [[Pre-Train]]：大规模 next-token prediction 依赖可并行训练的 Transformer block。
 
-应用开发者不需要手写 Transformer，但必须理解它带来的工程后果：
+这篇论文带来的工程后果包括：
 
 - 输入输出按 token 计费。
 - 长上下文会增加 prefill 成本。
 - 多轮对话和 Agent trace 会吃掉 context window。
 - RAG 不是把资料塞进 prompt 就结束，排序、压缩和引用检查仍然关键。
 
-## 先读论文哪里
+## 关键位置
 
-第一次读可以按这个顺序：
+- Abstract 和 Introduction：论文为什么去掉 recurrence。
+- Figure 1：encoder、decoder、attention 和 feed-forward block 的整体结构。
+- Section 3.2：scaled dot-product attention 和 multi-head attention。
+- Section 3.4、3.5：position-wise feed-forward 和 positional encoding。
+- Section 5：实验设置、训练成本和 BLEU 分数。
 
-1. Abstract 和 Introduction：确认论文为什么要去掉 recurrence。
-2. Figure 1：看 encoder、decoder、attention 和 feed-forward block 的整体结构。
-3. Section 3.2：理解 scaled dot-product attention 和 multi-head attention。
-4. Section 3.4、3.5：理解 position-wise feed-forward 和 positional encoding。
-5. Section 5：看实验设置和训练成本，不要只看 BLEU 分数。
-
-不建议第一次就卡在所有公式细节上。公式要服务于结构理解：query、key、value 分别承担什么角色，mask 为什么必要，多头为什么不是简单重复。
+公式服务于结构理解：query、key、value 分别承担什么角色，mask 为什么必要，多头为什么不是简单重复。
 
 ## 最容易误读的地方
 
@@ -80,16 +78,11 @@ tokens
 
 第四，原论文是 encoder-decoder 架构，今天很多 LLM 是 decoder-only。读论文时要区分原始机器翻译设置和现代自回归语言模型设置。
 
-## 用代码验证理解
+## 代码连接
 
-最小验证路径：
+[nanoGPT](https://github.com/karpathy/nanoGPT) 的 `model.py` 里有 `CausalSelfAttention` 和 `Block`，`train.py` 里能看到 batch 如何进入模型、loss 如何计算。修改 context length 会同时影响训练显存、速度和生成效果。
 
-1. 读 [[Attention]] 和 [[Transformer]]。
-2. 打开 [nanoGPT](https://github.com/karpathy/nanoGPT)，先看 `model.py` 里的 `CausalSelfAttention` 和 `Block`。
-3. 看 `train.py` 里 batch 如何进入模型、loss 如何计算。
-4. 改一次 context length，观察训练显存、速度和生成效果变化。
-
-你应该能解释：
+这条代码线可以连接几个问题：
 
 - 为什么 decoder-only 模型需要 causal mask。
 - 为什么生成阶段不能一次性并行生成所有 token。

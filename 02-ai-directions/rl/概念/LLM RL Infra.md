@@ -4,7 +4,7 @@ LLM RL Infra 不是单纯会跑 GRPO 命令。面试真正考的是：你能不�
 
 这篇文档用于补齐大模型强化学习后训练的深水区，重点面向 GRPO/RLVR、verl、DAPO/GSPO、熵崩溃、DeepSeek/Qwen 技术报告和推理优化。
 
-## 应该先形成的系统图
+## 系统图
 
 一个典型 LLM RL 训练系统可以拆成五段：
 
@@ -16,7 +16,7 @@ prompt dataset
   -> evaluation: held-out tasks, behavior traces, cost/latency/regression
 ```
 
-面试里不要只说“我用了 GRPO”。要说清楚：
+工程讨论里只说“用了 GRPO”信息量很低，关键是这些系统细节：
 
 - rollout 是谁生成的，生成时的 policy 是什么版本。
 - buffer 里保存了什么：prompt、response、token ids、attention mask、old logprobs、ref logprobs、reward、advantage、valid token mask、长度、metadata。
@@ -162,11 +162,11 @@ reward hacking 是模型找到奖励函数漏洞，例如只输出固定格式�
 
 关系是：如果某种 hack 获得高 reward，RL 会持续提高它的概率；一旦 entropy 降下来，模型就更难跳出这个 hack 模式。反过来，熵崩溃也会让 reward hacking 更难被发现，因为 sampled responses 太相似，eval 看不到失败模式的多样性。
 
-## verl 源码和使用体验应该怎么准备
+## verl 源码和使用体验
 
 题目里常有人写成 Veril，但多数大模型 RL 语境下指的是 verl / HybridFlow。
 
-面试问 “讲讲你对 verl 框架源码的改动和使用体验”，不能只回答“跑过脚本”。至少要准备四层：
+“讲讲 verl 框架源码的改动和使用体验”通常会落到四层：
 
 - 数据层：parquet schema、prompt_key、chat template、reward metadata、multi-turn trace 怎么进入 batch。
 - rollout 层：vLLM/SGLang 如何接入，actor 权重如何同步到 rollout engine，old logprobs 在哪里算。
@@ -277,9 +277,9 @@ class Singleton:
         return cls._instance
 ```
 
-## 面试准备清单
+## 白板问题
 
-你应该能白板讲清：
+这类系统讨论常落到这些问题：
 
 - GRPO 为什么不用 critic，advantage 怎么从 group reward 来。
 - 为什么用 old policy 采样仍可称为 on-policy。

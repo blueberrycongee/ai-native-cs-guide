@@ -99,7 +99,7 @@ run_turn(input):
 
 这也能解释为什么 coding agent 的难点不是“模型会写代码”这么简单。[SWE-agent paper](https://arxiv.org/abs/2405.15793) 讨论的是 agent-computer interface 对软件工程任务表现的影响；Codex 源码给了更具体的工程形态：模型看到哪些工具、工具调用如何进入 runtime、结果如何回到 history、什么时候继续 turn、什么时候停止。
 
-因此，读 Codex 的 Agent Loop 时，优先看 `run_turn`、`run_sampling_request`、`handle_output_item_done`、`ToolRouter` 和 `ToolCallRuntime` 这条路径。不要从 UI 或 README 开始猜它“先读文件再改文件”的流程，那只是用户视角，不是运行时结构。
+Codex 的 Agent Loop 可以沿着 `run_turn`、`run_sampling_request`、`handle_output_item_done`、`ToolRouter` 和 `ToolCallRuntime` 这条路径理解。UI 或 README 展示的是用户视角，运行时结构还包括 turn、history、tool router、tool runtime、context compaction、pending input、stop hook 和 rollout persistence。
 
 ## 停止条件
 
@@ -137,9 +137,9 @@ Agent Loop 必须能停，但它不是靠一句 prompt 让模型“觉得差不�
 
 很多任务的问题不是 Agent 数量不够，而是单个 loop 的状态、工具、权限和 eval 没做好。多 Agent 会放大调试难度；只有当任务天然需要不同权限边界、不同上下文视角或明确交接协议时，才值得引入 [[Single Agent vs Multi-Agent]]。
 
-## 验收标准
+## 最小运行形态
 
-读完这篇后，应该能做出一个很小但可验证的本地 Agent Loop：
+一个很小但可验证的本地 Agent Loop 通常包含：
 
 - 工具有 schema 和权限检查。
 - 每轮有结构化 trace。
@@ -149,7 +149,7 @@ Agent Loop 必须能停，但它不是靠一句 prompt 让模型“觉得差不�
 - 中断后能知道上一步做到哪里。
 - 至少有一组固定 eval 任务，用来比较 prompt、模型或工具改动。
 
-如果一个系统只会“模型调用工具再回答”，但没有状态、停止条件、trace 和 eval，它还只是一个 tool-calling demo，不是值得学习的 Agent Loop。
+只会“模型调用工具再回答”，但没有状态、停止条件、trace 和 eval 的系统，更接近 tool-calling demo。
 
 ## 相关概念
 

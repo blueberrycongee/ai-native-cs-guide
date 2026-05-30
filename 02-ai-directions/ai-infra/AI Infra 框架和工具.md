@@ -1,40 +1,35 @@
 # AI Infra 框架和工具
 
-AI Infra 的工具很多，别按工具名堆学习路线。先按问题分组：模型怎么服务、请求怎么路由、系统怎么观察、成本怎么控制。
+AI Infra 的工具可以按问题域来看：模型如何服务，请求如何路由，系统如何观测，成本如何控制。
 
-## 必须会用
+## 推理服务
 
-- vLLM：会启动 OpenAI-compatible server，会发送普通和 streaming 请求，会看 metrics。
-- 一个 HTTP 后端框架：能写 [[Model Gateway]]，处理鉴权、超时、取消和错误分类。
-- OpenTelemetry 或等价 tracing 工具：能把一次请求串起来。
-- Prometheus/Grafana 或等价 metrics 栈：能看延迟、错误率、吞吐、队列和资源。
-
-这一级要求能动手，不是知道名字。
-
-## 必须理解
-
-- SGLang：理解结构化输出、runtime、router/model gateway 的位置。
-- Ray Serve：理解模型服务和业务逻辑组合部署。
-- KServe：理解 Kubernetes 上的模型服务抽象。
-- llama.cpp：理解本地推理、量化、GGUF 和硬件限制。
-- LiteLLM 或同类网关：理解多供应商模型代理、fallback、budget 和 API 统一。
-
-这些工具不一定都要在第一个项目里跑，但要知道它们解决的问题。
-
-## 只需知道存在
-
-- Triton Inference Server：更通用的模型服务，适合多框架推理。
+- vLLM：OpenAI-compatible server、continuous batching、KV cache、metrics。
+- SGLang：structured outputs、runtime、router/model gateway、RadixAttention。
+- llama.cpp：本地推理、GGUF、量化、CPU/GPU offload、`llama-server`。
+- Text Generation Inference：Hugging Face 生态里的推理服务。
 - TensorRT-LLM：NVIDIA 生态里的高性能 LLM 推理优化。
-- DeepSpeed-Inference、Text Generation Inference：不同生态里的推理服务。
-- Kubernetes HPA/KEDA：做弹性扩缩容时会遇到。
-- verl/OpenRLHF：当 AI Infra 延伸到大模型 RL 后训练时，要理解 rollout engine、trainer、reward service、Ray worker、sequence packing 和 eval pipeline。详细见 [[LLM RL Infra]]。
+- Triton Inference Server：通用模型服务，覆盖多框架推理。
 
-## 学习顺序
+## 模型网关和路由
 
-1. 先写自己的最小模型网关，理解 [[HTTP]]、[[SSE]]、[[API Auth]] 和日志。
-2. 接 vLLM，观察自部署推理和托管 API 的差异。
-3. 加 metrics 和 trace，补 [[Observability]]。
-4. 需要多模型或多供应商时，再做 [[Model Routing]]。
-5. 需要集群和弹性时，再看 Ray Serve 或 KServe。
+- LiteLLM：多供应商模型代理、fallback、budget 和统一 API。
+- 自建 HTTP 后端：封装 [[Model Gateway]]、鉴权、超时、取消、错误分类和流式事件。
+- SGLang router / model gateway：多后端路由、metrics 和 tracing。
 
-工具不是目标。目标是能解释一次请求为什么慢、为什么失败、为什么贵，以及改动后质量有没有退化。
+## 观测和评测
+
+- OpenTelemetry：trace、span 和跨服务请求链路。
+- Prometheus / Grafana：延迟、错误率、吞吐、队列和资源监控。
+- 结构化日志：trace id、用户、模型、token、延迟、错误类型和模型版本。
+- eval pipeline：把模型版本、prompt 版本、上下文策略和结果质量关联起来。
+
+## 部署和扩缩容
+
+- Ray Serve：Python 模型服务、deployment graph、autoscaling 和 Serve LLM。
+- KServe：Kubernetes 上的 InferenceService、ServingRuntime 和 generative inference。
+- Kubernetes HPA / KEDA：弹性扩缩容。
+
+## 与后训练系统的交叉
+
+- verl / OpenRLHF：当 AI Infra 延伸到大模型 RL 后训练时，会出现 rollout engine、trainer、reward service、Ray worker、sequence packing 和 eval pipeline。相关系统视角见 [[LLM RL Infra]]。

@@ -62,11 +62,11 @@ for _ in range(max_new_tokens):
 - 把 attention 权重当成可靠解释。它能提供线索，但不能证明模型“为什么这么想”。
 - 只看模型参数规模，不看 tokenizer、数据、后训练、推理配置和系统约束。
 
-当你开始读 [[AI Infra]] 或 [[Pre-Train]]，再补多头注意力、位置编码、layer norm、MoE、FlashAttention 和并行训练会更有用。应用阶段先把 token、上下文、推理循环和显存成本讲清楚。
+在 [[AI Infra]] 或 [[Pre-Train]] 里，多头注意力、位置编码、layer norm、MoE、FlashAttention 和并行训练会继续展开。应用层更常遇到的是 token、上下文、推理循环和显存成本。
 
 ## 参考项目和资料
 
-- [Attention Is All You Need](https://arxiv.org/abs/1706.03762)：原始论文。先看模型结构图和第 3 节，不必一开始推完整公式。
-- [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)：适合建立直觉。
+- [Attention Is All You Need](https://arxiv.org/abs/1706.03762)：原始论文，结构图和第 3 节是核心位置。
+- [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)：图解 Transformer 直觉。
 - [Hugging Face Transformers](https://huggingface.co/docs/transformers)：看模型如何被加载、生成和微调。
-- [nanoGPT](https://github.com/karpathy/nanoGPT)：适合读一个紧凑的 GPT 训练实现，重点看 `model.py` 和 `train.py`。
+- [nanoGPT](https://github.com/karpathy/nanoGPT)：紧凑的 GPT 训练实现，核心文件包括 `model.py` 和 `train.py`。

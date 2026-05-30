@@ -43,9 +43,9 @@ RAG 里模型最后看到的不是完整文档，而是若干个 chunk。一个 
 - chunk 太小，召回了相关句子但无法支持完整答案。
 - chunk 太大，reranker 和模型都被无关内容干扰。
 
-## 验收
+## 评测信号
 
-评测 chunk 策略时，不要只问最终答案。先看 expected source 是否进入 top-k，再看引用是否支持答案。chunk 策略如果让 citation support 变差，就算最终答案偶尔对了，也不能算稳定。
+评测 chunk 策略时，最终答案只是一个信号。更关键的是 expected source 是否进入 top-k，以及引用是否支持答案。chunk 策略如果让 citation support 变差，即使最终答案偶尔正确，也不稳定。
 
 ## 相关概念
 

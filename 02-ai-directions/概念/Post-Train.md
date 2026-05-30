@@ -2,7 +2,7 @@
 
 Post-Train 是预训练之后让模型更适合任务和产品场景的一组方法。它包括指令微调、偏好优化、拒答策略、工具使用数据、reward model、RLHF/GRPO 和评测。
 
-完整路径见 [[Post-Train 路径]]。
+方向总览见 [[Post-Train 方向]]。
 
 ## 方向边界
 
@@ -20,7 +20,7 @@ Post-training 改的是模型行为：更会按指令回答、更稳定输出格
 - eval 集：格式、事实、拒答、安全和任务成功率。
 - 推理对比：微调前后同一批样例。
 
-真正难的是数据和评测，不只是把训练脚本跑起来。
+真正难的是数据和评测。训练脚本只是 pipeline 的一部分。
 
 ## 和其他方向的关系
 
@@ -29,6 +29,12 @@ Post-training 改的是模型行为：更会按指令回答、更稳定输出格
 - 和 [[Evals]] 强绑定，没有 eval 就不知道行为是否变好。
 - 和 [[Tool Use]] 相关，工具调用模型需要数据和系统双重约束。
 
-## 学习入口
+## 相关页面
 
-先读 [[Post-Train 方向]]，再用 TRL 或 Axolotl 做小模型 SFT，然后做 DPO。LLaMA-Factory 适合看配置化和 WebUI 工作流。OpenRLHF 适合后面理解大规模 RLHF/GRPO。
+- [[Post-Train 方向]]
+- [[Post-Train 信息来源]]
+- [[Post-Train 开源项目]]
+- [[Post-Train 框架和工具]]
+- [[SFT]]
+- [[DPO]]
+- [[RLHF]]

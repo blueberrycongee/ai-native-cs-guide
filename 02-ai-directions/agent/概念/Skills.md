@@ -264,7 +264,7 @@ Tool 是动作能力。Skill 是做事方法。
 - `shell` 是 tool
 - “发布前按顺序跑 lint、test、build”是 skill
 - `web_search` 是 tool
-- “调研一个开源项目时先看 README，再看 issues，再看最近 release”是 skill
+- “调研一个开源项目时整理 README、issues 和最近 release”是 skill
 
 一个 skill 可以指导 Agent 使用多个 tools，但 skill 本身不是 tool。
 

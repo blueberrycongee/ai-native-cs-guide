@@ -2,7 +2,7 @@
 
 PPO，全称 Proximal Policy Optimization，是一种常用的 policy gradient 方法。它在传统 RL 和早期 RLHF 里都很常见。
 
-这里不推公式，先看它解决的工程问题：更新 policy 时不能一步迈太大，否则训练会不稳定。
+它解决的核心工程问题是：更新 policy 时不能一步迈太大，否则训练会不稳定。
 
 ## 工作机制
 

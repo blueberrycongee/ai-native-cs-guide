@@ -36,7 +36,7 @@ notes
 - permission leakage：是否召回了当前用户无权访问的资料。
 - freshness error：是否召回了旧版本或已删除文档。
 
-调 chunk、embedding、hybrid search、metadata filter 和 rerank 时，先看这些指标。
+调 chunk、embedding、hybrid search、metadata filter 和 rerank 时，这些指标能定位检索问题。
 
 ## 回答指标
 

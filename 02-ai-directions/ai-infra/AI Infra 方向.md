@@ -14,21 +14,13 @@ AI Infra 当前先收敛在五个问题上：
 - [[Model Routing]]：如何在多个模型、供应商或推理后端之间选择。
 - [[GPU Basics]]：为什么显存、带宽、并发和利用率会限制 AI 服务。
 
-训练平台、特征平台、数据湖和全量 MLOps 也属于更宽的 AI Infra，但本仓库先不把范围拉太大。读者需要先做出能稳定服务小流量的 AI 应用，再进入大平台。
+训练平台、特征平台、数据湖和全量 MLOps 也属于更宽的 AI Infra。这个目录先收敛在模型调用、推理服务、观测、路由和 GPU 资源这些直接影响 AI 应用运行的问题上。
 
-## 推荐进入顺序
+## 工程边界
 
-1. 读 [[AI Infra 路径]]，明确第一个项目是模型调用网关。
-2. 补 [[HTTP]]、[[SSE]]、[[Streaming Response]]、[[API Auth]] 和 [[Inference]]。
-3. 做一个网关，把托管模型 API 包起来，记录 token、延迟和错误。
-4. 再接一个 vLLM 或 SGLang 后端，理解自部署推理和托管 API 的差异。
-5. 用 [[Evals]] 和日志比较模型版本，不靠感觉判断“效果变好”。
+AI Infra 经常被误解成“把平台搭起来”。真正影响系统质量的通常是更具体的环节：请求是否能取消，流式事件是否稳定穿过代理，错误能否分类，模型版本和 prompt 版本能否关联到 eval 结果，自部署服务能否解释 queue time、TTFT、tokens/s 和显存占用。
 
-## 需要避免的误区
-
-不要一开始就堆 Kubernetes、队列、服务网格和复杂监控。没有真实请求、错误和成本数据时，平台化很容易变成空架子。
-
-也不要把 OpenAI-compatible 当成完全兼容。不同推理引擎对 streaming、tool call、structured output、错误码和采样参数的支持并不总一致。模型网关要隔离这些差异。
+OpenAI-compatible 也不是完全兼容。不同推理引擎对 streaming、tool call、structured output、错误码和采样参数的支持并不总一致。模型网关的价值就在于隔离这些差异。
 
 ## 目录入口
 
