@@ -2,10 +2,10 @@
 
 Hermes Agent 的 memory 不是一套单独的长期记忆系统，而是两条机制并行：
 
-- 内置文件记忆：`MEMORY.md` 和 `USER.md`，通过 `memory` 工具维护，进入 system prompt。
+- 内置文件记忆：`MEMORY.md` 和 `USER.md`，通过 `memory` 工具维护，并通过 prompt 生效。
 - 外部 memory provider：通过 `MemoryProvider` / `MemoryManager` 接入 Mem0、Honcho、Hindsight 等后端。
 
-这两条路径都叫 memory，但工程位置不同。内置记忆更像小而稳定的 prompt bootstrap；外部 provider 更像跨 session 的召回、抽取和建模层。
+这两条路径都叫 memory，但工程位置不同。内置记忆更像小而稳定的 prompt bootstrap；外部 provider 更像跨 session 的召回、抽取和建模层。内置文件记忆如果不结合 prompt 看，就只剩下“两个 Markdown 文件”，解释不了它为什么会影响模型行为。
 
 ## 内置文件记忆
 
@@ -24,6 +24,33 @@ Hermes Agent 的 memory 不是一套单独的长期记忆系统，而是两条�
 - 之后的会话：重新加载磁盘，新的 memory 才进入 system prompt。
 
 context compression 是一个例外。压缩会触发 system prompt invalidation，`invalidate_system_prompt()` 会重新 `load_from_disk()`，所以压缩后的新 session 能看到本轮已经写入的 memory。
+
+## 内置 Memory 和 Prompt
+
+Hermes 的内置文件记忆要放在 prompt 结构里看。真正影响模型的不是文件本身，而是三个 prompt surface：
+
+| surface | 来源 | 作用 |
+| --- | --- | --- |
+| memory guidance | `agent/prompt_builder.py` 的 `MEMORY_GUIDANCE` | 告诉模型什么信息适合写入 memory，什么留给 session search 或 skill |
+| memory snapshot | `MemoryStore.format_for_system_prompt()` | 把 `MEMORY.md` / `USER.md` 渲染成 system prompt 里的上下文块 |
+| memory tool schema | `tools/memory_tool.py` 的 `MEMORY_SCHEMA` | 约束模型用 `add`、`replace`、`remove` 维护文件记忆 |
+
+`MEMORY_GUIDANCE` 是稳定 prompt 的一部分，只在 `memory` 工具存在时加入。它把 memory 的语义写得很窄：保存用户偏好、环境事实、工具怪癖、稳定约定；不要保存任务进度、PR 号、issue 号、commit SHA、阶段完成记录或临时 TODO。它还要求 memory 写成 declarative facts，而不是 self-instruction。比如“User prefers concise responses”是事实；“Always respond concisely”会在之后的 session 里被重新读成指令，可能覆盖当前用户请求。
+
+`MEMORY.md` 和 `USER.md` 的内容进入 system prompt 的 volatile tier。这里的 volatile 不是“每轮都变”，而是相对 stable identity / context files 来说更依赖当前 session 状态。Hermes 构造 system prompt 后会缓存整段 prompt，正常 turn 不会因为文件刚被写入就重新渲染。这样做的直接原因是 prefix cache：如果每次写 memory 都改变 system prompt，长会话里的缓存命中会被破坏。
+
+渲染出来的 memory block 不是裸文本。`MemoryStore` 会加 header、usage 和分隔符，例如 `MEMORY (your personal notes) [67% ...]`、`USER PROFILE (who the user is) [...]`，条目之间用 `§` 分隔。usage 让模型知道容量边界；分隔符让 replace / remove 的 substring matching 更稳定；header 则区分“关于用户的事实”和“Agent 对环境/项目的笔记”。
+
+`MEMORY_SCHEMA` 又在工具层重复了一次行为约束。schema 描述告诉模型什么时候保存、两个 target 分别代表什么、哪些内容要跳过。这个 schema 不只是参数定义，也是 prompt。Hermes 把“写 memory 的判断”放在 system guidance 和 tool schema 两处，是因为模型真正决定要不要写文件时，看到的是工具说明和当前上下文一起形成的行动空间。
+
+所以内置文件 memory 的闭环是：
+
+1. prompt 告诉模型哪些信息值得进入长期记忆。
+2. 文件 snapshot 在新 session 里作为上下文影响模型。
+3. 工具 schema 让模型用受限动作维护文件。
+4. 文件写入立即持久化，但不立即改变当前 session 的 prompt。
+
+这也是为什么安全扫描放在文件记忆上很关键。进入 `MEMORY.md` 的内容之后会变成 system prompt 的一部分，它的风险更接近 context file，而不是普通日志。
 
 ## 文件层的防护
 
@@ -130,6 +157,8 @@ Hermes 的 memory 设计不是把所有历史都塞进长期记忆，而是分�
 ## 源码入口
 
 - [MemoryStore / memory tool](https://github.com/NousResearch/hermes-agent/blob/main/tools/memory_tool.py)
+- [Prompt builder memory guidance](https://github.com/NousResearch/hermes-agent/blob/main/agent/prompt_builder.py)
+- [System prompt assembly](https://github.com/NousResearch/hermes-agent/blob/main/agent/system_prompt.py)
 - [MemoryProvider](https://github.com/NousResearch/hermes-agent/blob/main/agent/memory_provider.py)
 - [MemoryManager](https://github.com/NousResearch/hermes-agent/blob/main/agent/memory_manager.py)
 - [Agent init memory wiring](https://github.com/NousResearch/hermes-agent/blob/main/agent/agent_init.py)
