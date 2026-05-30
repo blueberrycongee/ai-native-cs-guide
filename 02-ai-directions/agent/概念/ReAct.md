@@ -97,6 +97,22 @@ Observation: ...
 
 忠于论文，ReAct 首先是一个 prompt-based paradigm：用少量人工写的任务轨迹，让冻结 LLM 学会在推理和行动之间切换。它不是工具权限系统，不是状态持久化系统，也不是生产级调度器。
 
+现代工程里的 ReAct，已经从一种 prompt 格式，变成了一种运行时控制循环。重点变化不在于 thought 是否展示给用户，而在于系统不再把 `Thought:` 当作核心协议。
+
+原论文的核心结构可以简化成：
+
+```text
+Thought -> Action -> Observation
+```
+
+现代工程里的核心结构更接近：
+
+```text
+model decides -> tool call -> runtime executes -> observation/state update -> model continues
+```
+
+也就是说，现代系统继承的是“根据外部观察继续决策”的思想；真正的工程边界通常变成结构化工具调用、运行时状态、权限检查、trace 和停止条件。reasoning trace 仍然可以用于计划、解释、进度说明或调试，但系统不能把安全、权限、停止和状态恢复寄托在模型写出来的 `Thought` 文本上。
+
 把 ReAct 迁移到工程系统时，应该保留论文里的两个核心点：
 
 - reasoning trace 用来组织上下文、计划、异常和进度，而不是装饰性地写一段“我在思考”。
