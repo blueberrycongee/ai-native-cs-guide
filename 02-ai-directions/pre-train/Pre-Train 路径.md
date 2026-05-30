@@ -30,9 +30,9 @@ raw data
 
 ## 代表项目
 
-- [nanoGPT](https://github.com/karpathy/nanoGPT)：紧凑的 GPT 训练实现，相关主题包括模型结构、训练循环、数据加载和 checkpoint。
-- [LitGPT](https://github.com/Lightning-AI/litgpt)：覆盖 pretrain、finetune、evaluate 和 serve 的训练工具，相关主题包括 recipes、workflows 和实验配置。
-- [Megatron-LM](https://github.com/NVIDIA/Megatron-LM)：大规模 Transformer 训练参考实现，相关主题包括并行策略、distributed optimizer 和 checkpoint。
+- [nanoGPT](https://github.com/karpathy/nanoGPT)：紧凑的 GPT 训练实现，涉及模型结构、训练循环、数据加载和 checkpoint。
+- [LitGPT](https://github.com/Lightning-AI/litgpt)：覆盖 pretrain、finetune、evaluate 和 serve 的训练工具，涉及 recipes、workflows 和实验配置。
+- [Megatron-LM](https://github.com/NVIDIA/Megatron-LM)：大规模 Transformer 训练参考实现，涉及并行策略、distributed optimizer 和 checkpoint。
 - [Hugging Face Transformers Trainer](https://huggingface.co/docs/transformers/trainer)：通用训练循环和 evaluation 接口。
 
-资料入口见 [[Pre-Train 信息来源]]，项目入口见 [[Pre-Train 开源项目]]，工具生态见 [[Pre-Train 框架和工具]]。
+资料入口见 [[Pre-Train 信息来源]]，项目整理见 [[Pre-Train 开源项目]]，工具生态见 [[Pre-Train 框架和工具]]。

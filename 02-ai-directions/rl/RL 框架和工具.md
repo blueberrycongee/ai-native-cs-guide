@@ -11,7 +11,7 @@ RL 工具可以按环境、算法实现、baseline、分布式训练和大模型
 
 ## 算法实现和 baseline
 
-- CleanRL：单文件算法实现，相关主题包括 rollout、advantage、loss 和实验日志。
+- CleanRL：单文件算法实现，涉及 rollout、advantage、loss 和实验日志。
 - Stable-Baselines3：常用 baseline、训练、保存、加载和评测。
 - CORL：offline RL 单文件实现。
 

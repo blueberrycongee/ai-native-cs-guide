@@ -6,7 +6,7 @@ Post-Train 工具围绕训练方法、数据格式、偏好优化、评测和大
 
 - TRL：SFT、DPO、GRPO、reward model 和 trainer 抽象。
 - PEFT：LoRA、QLoRA 和参数高效微调。
-- Axolotl：配置驱动的 fine-tuning 工作流，相关主题包括 YAML、dataset formats 和复现实验。
+- Axolotl：配置驱动的 fine-tuning 工作流，涉及 YAML、dataset formats 和复现实验。
 - LLaMA-Factory：多模型、多方法和 WebUI 的 fine-tuning 工作流。
 
 ## 数据和格式

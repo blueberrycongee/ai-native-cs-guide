@@ -1,6 +1,6 @@
 # Agent 开源项目
 
-Agent 方向的开源项目可以按系统形态分成 coding agent、personal agent 和 orchestration framework。
+Agent 方向的开源项目大致分成 coding agent、personal agent 和 orchestration framework。
 
 ## Coding Agent
 

@@ -30,8 +30,8 @@ base model
 ## 代表项目
 
 - [TRL](https://huggingface.co/docs/trl)：Hugging Face 生态里的 SFT、DPO、GRPO 和 reward model 工具。
-- [Axolotl](https://docs.axolotl.ai/)：配置驱动的 fine-tuning 工作流，相关主题包括 dataset formats、YAML 配置和训练复现。
+- [Axolotl](https://docs.axolotl.ai/)：配置驱动的 fine-tuning 工作流，涉及 dataset formats、YAML 配置和训练复现。
 - [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory)：多模型、多方法和 WebUI 的 fine-tuning 工作流。
 - [OpenRLHF](https://github.com/OpenRLHF/OpenRLHF)：Ray、vLLM 和 RLHF/GRPO 工程化实现。
 
-资料入口见 [[Post-Train 信息来源]]，项目入口见 [[Post-Train 开源项目]]，工具生态见 [[Post-Train 框架和工具]]。
+资料入口见 [[Post-Train 信息来源]]，项目整理见 [[Post-Train 开源项目]]，工具生态见 [[Post-Train 框架和工具]]。

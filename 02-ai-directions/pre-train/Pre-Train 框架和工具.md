@@ -5,8 +5,8 @@ Pre-Train 工具可以按训练系统的层次整理：张量计算、训练循�
 ## 张量计算和训练循环
 
 - PyTorch：`forward`、loss、backward、optimizer、scheduler 和 autograd。
-- nanoGPT：紧凑的 GPT 训练实现，相关主题包括模型结构、数据加载、训练循环和 checkpoint。
-- LitGPT：覆盖 pretrain、finetune、evaluate、serve 的工作流，相关主题包括 recipes 和实验配置。
+- nanoGPT：紧凑的 GPT 训练实现，涉及模型结构、数据加载、训练循环和 checkpoint。
+- LitGPT：覆盖 pretrain、finetune、evaluate、serve 的工作流，涉及 recipes 和实验配置。
 - Hugging Face Transformers Trainer：通用训练抽象、training arguments、evaluation loop 和 checkpoint。
 
 ## 数据和 tokenizer

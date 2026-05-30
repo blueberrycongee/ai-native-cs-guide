@@ -28,10 +28,10 @@ browser / app
 
 ## 代表项目
 
-- [vLLM](https://docs.vllm.ai/en/latest/)：高吞吐 LLM 推理服务，相关主题包括 OpenAI-compatible server、continuous batching、KV cache 和 metrics。
-- [SGLang](https://docs.sglang.ai/)：结构化生成和高性能 runtime，相关主题包括 router/model gateway、structured outputs、RadixAttention 和 tracing。
-- [Ray Serve](https://docs.ray.io/en/latest/serve/index.html)：可组合的 Python 模型服务，相关主题包括 deployment graph、autoscaling 和业务逻辑编排。
-- [KServe](https://kserve.github.io/kserve/)：Kubernetes 上的模型服务抽象，相关主题包括 InferenceService、ServingRuntime 和 generative inference。
-- [llama.cpp](https://github.com/ggml-org/llama.cpp)：本地推理和量化生态，相关主题包括 GGUF、quantization、server 和 CPU/GPU offload。
+- [vLLM](https://docs.vllm.ai/en/latest/)：高吞吐 LLM 推理服务，涉及 OpenAI-compatible server、continuous batching、KV cache 和 metrics。
+- [SGLang](https://docs.sglang.ai/)：结构化生成和高性能 runtime，涉及 router/model gateway、structured outputs、RadixAttention 和 tracing。
+- [Ray Serve](https://docs.ray.io/en/latest/serve/index.html)：可组合的 Python 模型服务，涉及 deployment graph、autoscaling 和业务逻辑编排。
+- [KServe](https://kserve.github.io/kserve/)：Kubernetes 上的模型服务抽象，涉及 InferenceService、ServingRuntime 和 generative inference。
+- [llama.cpp](https://github.com/ggml-org/llama.cpp)：本地推理和量化生态，涉及 GGUF、quantization、server 和 CPU/GPU offload。
 
-更完整的项目入口见 [[AI Infra 开源项目]]，资料入口见 [[AI Infra 信息来源]]，工具生态见 [[AI Infra 框架和工具]]。
+更完整的项目整理见 [[AI Infra 开源项目]]，资料入口见 [[AI Infra 信息来源]]，工具生态见 [[AI Infra 框架和工具]]。

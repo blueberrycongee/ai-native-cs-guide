@@ -23,7 +23,7 @@
 
 [[Agent 方向]] 关心的是模型如何围绕目标使用上下文、工具和反馈循环工作。
 
-相关主题包括 [[Prompting]]、[[Tool Use]]、[[Context Engineering]]、[[RAG]] 和 [[Evals]]。
+这条线会自然连接到 [[Prompting]]、[[Tool Use]]、[[Context Engineering]]、[[RAG]] 和 [[Evals]]。
 
 ### AI Infra
 

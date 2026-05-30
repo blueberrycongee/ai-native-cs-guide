@@ -30,9 +30,9 @@ policy
 ## 代表项目
 
 - [Gymnasium](https://gymnasium.farama.org/)：强化学习环境 API。
-- [CleanRL](https://github.com/vwxyzjn/cleanrl)：单文件算法实现，相关主题包括 rollout、advantage、loss 和实验日志。
+- [CleanRL](https://github.com/vwxyzjn/cleanrl)：单文件算法实现，涉及 rollout、advantage、loss 和实验日志。
 - [Stable-Baselines3](https://stable-baselines3.readthedocs.io/)：常用 RL baseline 工具。
 - [RLlib](https://docs.ray.io/en/master/rllib/index.html)：分布式、多 agent 和生产级 RL 框架。
 - [TRL](https://huggingface.co/docs/trl)：语言模型 post-training 中的 RL 路径。
 
-资料入口见 [[RL 信息来源]]，项目入口见 [[RL 开源项目]]，工具生态见 [[RL 框架和工具]]。
+资料入口见 [[RL 信息来源]]，项目整理见 [[RL 开源项目]]，工具生态见 [[RL 框架和工具]]。
