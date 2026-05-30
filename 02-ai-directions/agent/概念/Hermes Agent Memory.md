@@ -166,3 +166,90 @@ Hermes 的 memory 设计不是把所有历史都塞进长期记忆，而是分�
 - [Compression session switch](https://github.com/NousResearch/hermes-agent/blob/main/agent/conversation_compression.py)
 - [Mem0 provider](https://github.com/NousResearch/hermes-agent/blob/main/plugins/memory/mem0/__init__.py)
 - [Hindsight provider](https://github.com/NousResearch/hermes-agent/blob/main/plugins/memory/hindsight/__init__.py)
+
+## 相关 Prompt Surface
+
+Hermes 内置文件记忆相关的 prompt surface 主要有三处。
+
+### `MEMORY_GUIDANCE`
+
+来源：[agent/prompt_builder.py](https://github.com/NousResearch/hermes-agent/blob/main/agent/prompt_builder.py)
+
+这段 guidance 在 `memory` 工具可用时进入 stable system prompt。它定义了内置 memory 的语义边界：
+
+- memory 是跨 session 的 persistent memory。
+- 写入方式是调用 `memory` tool。
+- 写入对象是 durable facts，包括用户偏好、环境细节、工具怪癖和稳定约定。
+- 内容要 compact，只保留之后仍会影响行为的信息。
+- 价值判断是减少用户之后重复纠正或重复说明。
+- 用户偏好和 recurring corrections 高于任务过程细节。
+- 任务进度、session outcome、完成日志、临时 TODO 不属于 memory。
+- PR 号、issue 号、commit SHA、阶段完成记录、文件数量等容易过期的信息不属于 memory。
+- 工作流和做事方法属于 skills，不属于 memory。
+- memory 要写成 declarative facts，不写成自我命令。
+
+这里最关键的是最后一点：Hermes 明确区分 fact 和 instruction。`User prefers concise responses` 是事实；`Always respond concisely` 会在之后的 session 里变成一条更强的指令，可能覆盖当前用户请求。
+
+### Memory Snapshot Block
+
+来源：[tools/memory_tool.py](https://github.com/NousResearch/hermes-agent/blob/main/tools/memory_tool.py)
+
+`MEMORY.md` 和 `USER.md` 进入 system prompt 时不是裸文件内容，而是被渲染成带 header、usage 和分隔符的 block：
+
+```text
+══════════════════════════════════════════════
+MEMORY (your personal notes) [<usage>% - <current>/<limit> chars]
+══════════════════════════════════════════════
+<entry>
+§
+<entry>
+```
+
+`USER.md` 对应的 header 是：
+
+```text
+USER PROFILE (who the user is) [<usage>% - <current>/<limit> chars]
+```
+
+这个 block 本身也是 prompt 设计的一部分。header 告诉模型这段内容是什么，usage 告诉模型容量边界，`§` 分隔符让条目边界清楚，也让 `replace` / `remove` 的 substring matching 更稳定。
+
+### `MEMORY_SCHEMA`
+
+来源：[tools/memory_tool.py](https://github.com/NousResearch/hermes-agent/blob/main/tools/memory_tool.py)
+
+`memory` 工具 schema 也承担 prompt 作用。它不是只有参数定义，还在 description 里说明什么时候写、写到哪里、什么不要写。
+
+工具表面大致是：
+
+```text
+name: memory
+action: add | replace | remove
+target: memory | user
+content: entry content
+old_text: substring used by replace/remove
+```
+
+其中 `target` 的语义是：
+
+- `user`：用户是谁、偏好、沟通方式、长期约束。
+- `memory`：Agent 对环境、项目、工具和经验的笔记。
+
+schema description 和 `MEMORY_GUIDANCE` 有意重复了一些规则：保存 durable information，跳过 trivial info、raw data dumps 和 temporary task state。这样模型在决定是否调用工具时，能在工具说明里再次看到 memory 的边界。
+
+### `<memory-context>`
+
+来源：[agent/memory_manager.py](https://github.com/NousResearch/hermes-agent/blob/main/agent/memory_manager.py)
+
+这块主要用于外部 provider 的 prefetch context，不是内置文件记忆，但它属于同一个 memory 注入问题。
+
+外部 provider 返回的召回内容会被包成：
+
+```text
+<memory-context>
+[System note: recalled memory context, not new user input]
+
+<provider context>
+</memory-context>
+```
+
+它的作用是把 recalled memory 和用户当轮输入隔开。模型可以使用这段内容，但这段内容不是用户刚刚说的话。Hermes 还会在 streaming 输出层 scrub 这个 block，避免 provider context 被原样泄漏到用户可见回复里。
