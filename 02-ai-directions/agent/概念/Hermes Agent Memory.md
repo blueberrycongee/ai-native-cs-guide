@@ -169,7 +169,7 @@ Hermes 的 memory 设计不是把所有历史都塞进长期记忆，而是分�
 
 ## 相关 Prompt Surface
 
-Hermes 内置文件记忆相关的 prompt surface 主要有三处。
+Hermes 内置文件记忆相关的 prompt surface 主要有三处。源码里的 prompt 主要是英文，这里保留英文语义，再补一层中文对应说明。
 
 ### `MEMORY_GUIDANCE`
 
@@ -177,16 +177,29 @@ Hermes 内置文件记忆相关的 prompt surface 主要有三处。
 
 这段 guidance 在 `memory` 工具可用时进入 stable system prompt。它定义了内置 memory 的语义边界：
 
-- memory 是跨 session 的 persistent memory。
-- 写入方式是调用 `memory` tool。
-- 写入对象是 durable facts，包括用户偏好、环境细节、工具怪癖和稳定约定。
-- 内容要 compact，只保留之后仍会影响行为的信息。
-- 价值判断是减少用户之后重复纠正或重复说明。
-- 用户偏好和 recurring corrections 高于任务过程细节。
-- 任务进度、session outcome、完成日志、临时 TODO 不属于 memory。
-- PR 号、issue 号、commit SHA、阶段完成记录、文件数量等容易过期的信息不属于 memory。
-- 工作流和做事方法属于 skills，不属于 memory。
-- memory 要写成 declarative facts，不写成自我命令。
+英文要点：
+
+- persistent memory across sessions
+- save durable facts with the `memory` tool
+- user preferences, environment details, tool quirks, stable conventions
+- compact and focused on facts that will still matter later
+- prioritize reducing future user steering
+- user preferences and recurring corrections outrank procedural task details
+- do not save task progress, session outcomes, logs, temporary TODOs, PR numbers, issue numbers, commit SHAs, phase records, file counts
+- workflows belong in skills
+- write memories as declarative facts, not instructions
+
+中文对应：
+
+- memory 是跨会话持久存在的少量事实层。
+- 写入路径是 `memory` 工具，而不是模型自己“记住”。
+- 适合写入的是用户偏好、环境事实、工具怪癖、项目长期约定。
+- memory 在设计上保持短小，只保留之后仍会影响行为的信息。
+- 价值判断是减少用户之后重复纠正、重复说明的次数。
+- 用户偏好和反复纠正，比一次任务里的过程细节更重要。
+- 任务进度、完成记录、PR / issue / commit 等容易过期的信息不进入 memory。
+- 工作流、操作步骤和解决问题的方法进入 skill，不进入 memory。
+- memory 写成事实，不写成命令。
 
 这里最关键的是最后一点：Hermes 明确区分 fact 和 instruction。`User prefers concise responses` 是事实；`Always respond concisely` 会在之后的 session 里变成一条更强的指令，可能覆盖当前用户请求。
 
@@ -195,6 +208,8 @@ Hermes 内置文件记忆相关的 prompt surface 主要有三处。
 来源：[tools/memory_tool.py](https://github.com/NousResearch/hermes-agent/blob/main/tools/memory_tool.py)
 
 `MEMORY.md` 和 `USER.md` 进入 system prompt 时不是裸文件内容，而是被渲染成带 header、usage 和分隔符的 block：
+
+英文形态：
 
 ```text
 ══════════════════════════════════════════════
@@ -211,6 +226,13 @@ MEMORY (your personal notes) [<usage>% - <current>/<limit> chars]
 USER PROFILE (who the user is) [<usage>% - <current>/<limit> chars]
 ```
 
+中文对应：
+
+- `MEMORY (your personal notes)`：这是 Agent 自己的长期笔记。
+- `USER PROFILE (who the user is)`：这是关于用户的长期画像。
+- `[<usage>% - <current>/<limit> chars]`：这是容量提示，让模型知道 memory 不是无限上下文。
+- `§`：这是条目分隔符，让每条 memory 的边界更清楚。
+
 这个 block 本身也是 prompt 设计的一部分。header 告诉模型这段内容是什么，usage 告诉模型容量边界，`§` 分隔符让条目边界清楚，也让 `replace` / `remove` 的 substring matching 更稳定。
 
 ### `MEMORY_SCHEMA`
@@ -219,7 +241,7 @@ USER PROFILE (who the user is) [<usage>% - <current>/<limit> chars]
 
 `memory` 工具 schema 也承担 prompt 作用。它不是只有参数定义，还在 description 里说明什么时候写、写到哪里、什么不要写。
 
-工具表面大致是：
+英文工具表面大致是：
 
 ```text
 name: memory
@@ -234,6 +256,16 @@ old_text: substring used by replace/remove
 - `user`：用户是谁、偏好、沟通方式、长期约束。
 - `memory`：Agent 对环境、项目、工具和经验的笔记。
 
+中文对应：
+
+- `add`：新增一条长期事实。
+- `replace`：用 `old_text` 找到旧条目并替换。
+- `remove`：用 `old_text` 找到旧条目并删除。
+- `target=user`：写入用户画像。
+- `target=memory`：写入 Agent 对环境、项目、工具、经验的笔记。
+- `content`：新条目内容。
+- `old_text`：替换或删除时用于定位旧条目的短文本。
+
 schema description 和 `MEMORY_GUIDANCE` 有意重复了一些规则：保存 durable information，跳过 trivial info、raw data dumps 和 temporary task state。这样模型在决定是否调用工具时，能在工具说明里再次看到 memory 的边界。
 
 ### `<memory-context>`
@@ -244,6 +276,8 @@ schema description 和 `MEMORY_GUIDANCE` 有意重复了一些规则：保存 du
 
 外部 provider 返回的召回内容会被包成：
 
+英文形态：
+
 ```text
 <memory-context>
 [System note: recalled memory context, not new user input]
@@ -251,5 +285,12 @@ schema description 和 `MEMORY_GUIDANCE` 有意重复了一些规则：保存 du
 <provider context>
 </memory-context>
 ```
+
+中文对应：
+
+- `<memory-context>`：这里开始是一段召回来的 memory context。
+- `not new user input`：这不是用户刚刚输入的新请求。
+- `<provider context>`：这里放外部 provider 返回的召回结果。
+- `</memory-context>`：召回上下文结束。
 
 它的作用是把 recalled memory 和用户当轮输入隔开。模型可以使用这段内容，但这段内容不是用户刚刚说的话。Hermes 还会在 streaming 输出层 scrub 这个 block，避免 provider context 被原样泄漏到用户可见回复里。
