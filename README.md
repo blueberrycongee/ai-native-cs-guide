@@ -53,23 +53,15 @@
 - 框架和工具：按问题域整理工具生态。
 - 概念文章：把具体机制、工程边界和实现问题讲清楚。
 
-## 用 Lumina Note 阅读
+## 阅读方式
 
-这个仓库是 Markdown 笔记库，内部链接使用双括号：
-
-```md
-[[Transformer]]
-[[Agent]]
-[[Context Engineering]]
-```
-
-在 GitHub 上可以直接读 Markdown。但如果想要更好的双向链接和笔记浏览体验，可以把仓库 clone 到本地，用 [Lumina Note](https://github.com/blueberrycongee/Lumina-Note) 打开。
+在 GitHub 上可以直接读 Markdown。仓库也可以用 [Lumina Note](https://github.com/blueberrycongee/Lumina-Note) 打开，以获得更完整的双向链接和笔记浏览体验。
 
 ```bash
 git clone https://github.com/blueberrycongee/ai-native-cs-guide.git
 ```
 
-Lumina Note 是一个 Markdown 笔记项目，支持双向链接，适合阅读这种不是线性教材的知识库。
+仓库内的概念链接采用常见的 wikilink 写法，很多笔记工具都支持；GitHub 上则会按普通 Markdown 文本显示。
 
 ## 贡献
 
@@ -94,7 +86,7 @@ Lumina Note 是一个 Markdown 笔记项目，支持双向链接，适合阅读�
 写文档时请尽量做到：
 
 - 直接说清楚这个内容解决什么问题
-- 内部概念使用 `[[...]]` 双向链接
+- 内部概念沿用仓库现有的笔记链接写法
 - 外部资料使用普通 Markdown 链接
 - 不把概念文档写成 API reference
 - 如果一段内容开始变成大量字段和参数，优先链接外部资料
