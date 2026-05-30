@@ -6,12 +6,13 @@ Memory 在 Agent 系统里不是一个单一组件。它可能是 prompt bootstr
 
 ## Hermes Agent Memory
 
+- [[Hermes Agent Memory]]
 - [MemoryManager](https://github.com/NousResearch/hermes-agent/blob/main/agent/memory_manager.py)
 - [MemoryProvider](https://github.com/NousResearch/hermes-agent/blob/main/agent/memory_provider.py)
 
-Hermes Agent 把 memory 放在 provider 抽象下。provider 可以在启动时初始化，在 turn 前 prefetch，在上下文压缩前提取信息，在 turn 后同步写入，也可以向模型暴露 memory 工具。
+Hermes Agent 同时有内置文件记忆和外部 provider 抽象。内置记忆通过 `MEMORY.md` / `USER.md` 进入 system prompt；外部 provider 可以在启动时初始化，在 turn 前 prefetch，在上下文压缩前提取信息，在 turn 后同步写入，也可以向模型暴露 memory 工具。
 
-相关问题集中在 provider 生命周期、session scope、外部 provider 数量限制、memory context 注入和清理。
+相关问题集中在 frozen snapshot、provider 生命周期、session scope、外部 provider 数量限制、memory context 注入和清理。
 
 ## OpenClaw Memory
 
