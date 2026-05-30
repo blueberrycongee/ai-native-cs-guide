@@ -14,6 +14,7 @@ RL 工具要按阶段选。先用小环境和可读实现建立概念，再用�
 - TensorBoard 或 Weights & Biases：记录 reward、loss、episode length、eval metrics。
 - PettingZoo：多 agent 环境接口。
 - TRL/OpenRLHF：理解大模型 post-training 里的 RL 路径。
+- verl：理解 actor、rollout、reference、reward worker 如何组成大模型 RL 数据流，重点看 GRPO/PPO trainer、vLLM/SGLang rollout、remove padding 和 sequence parallel。
 
 ## 只需知道存在
 
@@ -28,5 +29,6 @@ RL 工具要按阶段选。先用小环境和可读实现建立概念，再用�
 3. CleanRL 读 PPO 单文件实现。
 4. 修改 reward，观察策略变化。
 5. 再读 RLlib 或 TRL/OpenRLHF。
+6. 如果目标是 LLM RL Infra，读 [[LLM RL Infra]]，然后挑 TRL、OpenRLHF 或 verl 中一个框架，把 rollout buffer 和 loss 计算走一遍。
 
 工具不是重点。重点是你能解释环境、奖励和策略为什么产生当前行为。

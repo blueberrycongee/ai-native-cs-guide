@@ -22,6 +22,18 @@ RL 的信息源要分层。教材讲概念，Gymnasium 讲环境接口，CleanRL
 - [Gymnasium paper](https://arxiv.org/abs/2407.17032)：理解环境接口标准化问题。
 - [RLlib paper](https://arxiv.org/abs/1712.09381)：看分布式 RL 抽象。
 - [InstructGPT](https://arxiv.org/abs/2203.02155)：看 RLHF 如何进入语言模型。
+- [DeepSeekMath](https://arxiv.org/abs/2402.03300)：看 [[GRPO]] 的 critic-free group baseline 和公式。
+- [DAPO](https://dapo-sia.github.io/static/pdf/dapo_paper.pdf)：看长 CoT RLVR 中的 Clip-Higher、Dynamic Sampling、Token-Level Loss 和 Overlong Reward Shaping。
+- [GSPO](https://arxiv.org/abs/2507.18071)：看 sequence-level importance ratio 如何改善 GRPO 在长序列和 MoE RL 中的不稳定。
+- [R3 / Rollout Routing Replay](https://arxiv.org/abs/2510.11370)：看 MoE RL 中训练和推理 router 不一致如何导致不稳定。
+
+## LLM RL Infra
+
+- [verl](https://github.com/verl-project/verl)：看 actor、rollout、reference、reward worker 的工程拆分，以及 vLLM/SGLang、FSDP/Megatron 的接入。
+- [TRL GRPOTrainer](https://huggingface.co/docs/trl/grpo_trainer)：看 GRPO 配置、vLLM 生成、importance sampling、off-policy mismatch。
+- [OpenRLHF RL Training Guide](https://openrlhf.readthedocs.io/en/latest/agent_training.html)：看 PPO/GRPO/RLOO、异步 rollout、off-policy correction、dynamic sampling 和 entropy。
+- [NeMo RL GRPO Guide](https://docs.nvidia.com/nemo/rl/nightly/guides/grpo.html)：看 GRPO 工程 walkthrough 和 importance sampling correction。
+- [[LLM RL Infra]]
 
 ## 社区讨论
 

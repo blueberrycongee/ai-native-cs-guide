@@ -15,6 +15,11 @@ Post-Train 的信息更新很快。要优先看官方文档、训练脚本、数
 - [Direct Preference Optimization](https://arxiv.org/abs/2305.18290)：理解 [[DPO]] 为什么绕开显式 RL pipeline。
 - [OpenRLHF paper](https://arxiv.org/abs/2405.11143)：看大规模 RLHF 工程如何用 Ray、vLLM、DeepSpeed 组织。
 - [LLaMA-Factory paper](https://arxiv.org/abs/2403.13372)：看统一微调工具的工程取舍。
+- [DeepSeekMath](https://arxiv.org/abs/2402.03300)：看 [[GRPO]] 的原始公式和 group-relative advantage。
+- [DAPO](https://dapo-sia.github.io/static/pdf/dapo_paper.pdf)：看长 CoT RLVR 的可复现系统和稳定性改造。
+- [GSPO](https://arxiv.org/abs/2507.18071)：看 sequence-level policy optimization 与 MoE RL 稳定性。
+- [DeepSeek-R1](https://github.com/deepseek-ai/DeepSeek-R1)：看 R1-Zero、R1 多阶段 pipeline 和 distillation。
+- [Qwen3 Technical Report](https://arxiv.org/abs/2505.09388)：看 thinking/non-thinking、MoE、多语言和后训练策略。
 
 ## 数据来源
 

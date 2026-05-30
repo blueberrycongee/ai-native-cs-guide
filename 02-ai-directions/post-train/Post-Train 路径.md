@@ -9,6 +9,7 @@ Post-Train 关注预训练之后的模型改造：指令微调、偏好优化、
 3. 用同一组 [[Evals]] 比较微调前后输出。
 4. 再看 [[DPO]]、[[GRPO]]、[[Reward Model]] 和 [[RLHF]]。
 5. 最后看大规模框架如何处理分布式、vLLM、Ray 和数据管线。
+6. 面试或工程深入时读 [[LLM RL Infra]]，补上 GRPO on-policy、rollout buffer、DAPO/GSPO、熵崩溃、verl 和推理优化。
 
 公式可以晚一点看。先知道每种方法想修什么问题。
 
@@ -62,6 +63,7 @@ Post-Train 关注预训练之后的模型改造：指令微调、偏好优化、
 - reward model。
 - PPO、GRPO、online RL。
 - 分布式后训练。
+- LLM RL Infra：verl、rollout/reward/trainer 数据流、old policy logprobs、importance sampling、熵崩溃和 reward hacking。
 
 ## 阶段验收标准
 

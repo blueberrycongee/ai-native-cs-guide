@@ -4,6 +4,8 @@ RL，也就是强化学习，研究智能体如何在环境里通过反馈学习
 
 在 AI Native 语境里，RL 和 [[Post-Train]]、[[Agent]]、代码环境、工具环境会相遇。模型在环境里试错、用 reward 优化输出、用 verifier 训练推理能力，都可以放到 RL 框架里理解。
 
+如果目标是准备大模型 RL Infra 面试，不要只停留在传统 Gym 环境。需要进一步读 [[LLM RL Infra]]，把 GRPO、rollout buffer、verl、DAPO/GSPO、熵崩溃和 eval 串成一条系统链路。
+
 ## 方向边界
 
 RL 适合这些问题：
@@ -39,3 +41,4 @@ RL 适合这些问题：
 - [[Reward]]
 - [[PPO]]
 - [[Offline RL]]
+- [[LLM RL Infra]]

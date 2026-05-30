@@ -9,6 +9,7 @@ RL，也就是强化学习，关注智能体如何在环境里通过反馈学习
 3. 读 CleanRL 的单文件 PPO 或 DQN，别急着背算法名。
 4. 用 Stable-Baselines3 做可靠 baseline。
 5. 再把 RL 连接回 [[Post-Train]]：[[RLHF]]、[[GRPO]]、[[Reward Model]] 和 eval。
+6. 如果要准备 LLM RL Infra 面试，继续读 [[LLM RL Infra]]：重点不是背算法名，而是能解释 rollout、buffer、importance sampling、verl、DAPO/GSPO 和评测闭环。
 
 RL 的难点不只是算法。更难的是定义环境和奖励。
 
@@ -63,6 +64,7 @@ RL 的难点不只是算法。更难的是定义环境和奖励。
 - offline RL。
 - multi-agent RL。
 - 大模型 RLHF/GRPO 的分布式训练细节。
+- LLM RL Infra：rollout engine、reward/verifier、old policy logprobs、sequence packing、MoE 训推不一致、熵崩溃。
 
 ## 阶段验收标准
 
@@ -70,6 +72,8 @@ RL 的难点不只是算法。更难的是定义环境和奖励。
 - 能解释 reward 改动为什么改变策略。
 - 能用曲线、视频或 trace 证明策略行为。
 - 能指出 RLHF/DPO/GRPO 与传统 RL 的连接和差异。
+- 能解释 GRPO 为什么是 near-on-policy、旧策略样本为什么不等于 off-policy replay、importance sampling ratio 解决什么问题。
+- 能说清 DAPO/GSPO 分别修补了 GRPO 的哪些稳定性问题。
 - 能说明什么时候不该用 RL：反馈稀疏、环境不可控、评测不可靠时，先别上。
 
 ## 继续深入

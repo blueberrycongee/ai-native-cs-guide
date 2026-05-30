@@ -65,5 +65,5 @@
 
 1. 读完 `01-foundations/概念` 的公共基础
 2. 读本目录下五个方向概念
-3. 进入 `05-agents` 做第一个项目型学习路径
+3. 进入 `02-ai-directions/agent` 做第一个项目型学习路径
 4. 遇到工程问题时回到 `03-engineering-basics` 和 `04-ai-systems`

@@ -27,6 +27,7 @@ AI Infra 的工具很多，别按工具名堆学习路线。先按问题分组�
 - TensorRT-LLM：NVIDIA 生态里的高性能 LLM 推理优化。
 - DeepSpeed-Inference、Text Generation Inference：不同生态里的推理服务。
 - Kubernetes HPA/KEDA：做弹性扩缩容时会遇到。
+- verl/OpenRLHF：当 AI Infra 延伸到大模型 RL 后训练时，要理解 rollout engine、trainer、reward service、Ray worker、sequence packing 和 eval pipeline。详细见 [[LLM RL Infra]]。
 
 ## 学习顺序
 

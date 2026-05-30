@@ -48,17 +48,12 @@
 02-ai-directions/
 03-engineering-basics/
 04-ai-systems/
-05-agents/
-06-ai-infra/
-07-pre-train/
-08-post-train/
-09-rl/
-10-projects/
-11-papers/
+05-projects/
+06-papers/
 90-resources/
 ```
 
-前两部分先建立基本判断：AI 的底层概念是什么，行业里有哪些方向。后面再按自己的项目或兴趣进入具体路径。
+前两部分先建立基本判断：AI 的底层概念是什么，行业里有哪些方向。具体方向不再散在顶层，而是收在 `02-ai-directions/` 下面。后面再按自己的项目或兴趣进入工程基础、通用系统、项目和论文。
 
 如果你是第一次来，可以先看：
 
@@ -74,7 +69,7 @@
 1. 方向首页，例如 [[AI Infra 方向]]、[[Pre-Train 方向]]、[[Post-Train 方向]]、[[RL 方向]]
 2. 路径页，例如 [[AI Infra 路径]]
 3. 信息来源、开源项目、框架和工具
-4. `概念/` 下的核心教程页
+4. 该方向 `概念/` 下的核心教程页
 
 ## 用 Lumina Note 阅读
 

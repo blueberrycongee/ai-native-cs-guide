@@ -75,7 +75,7 @@ Agent 当前已经有相对完整的目录。AI Infra、Pre-Train、Post-Train�
 
 ### 经典论文深挖模块
 
-仓库可以增加 `11-papers/` 作为跨方向论文深挖模块，但它不能变成论文收藏夹。
+仓库可以增加 `06-papers/` 作为跨方向论文深挖模块，但它不能变成论文收藏夹。
 
 论文深挖的目标不是复述摘要、翻译公式或堆链接，而是回答：
 
@@ -294,11 +294,72 @@ GOAL.md
 02-ai-directions/
   AI 方向地图.md
   概念/
-    Agent.md
+    Agent 方向.md
     AI Infra.md
     Pre-Train.md
     Post-Train.md
     RL.md
+  agent/
+    Agent.md
+    Agent 信息来源.md
+    Agent 开源项目.md
+    概念/
+      Agent Loop.md
+      ReAct.md
+      Tool Use.md
+      Memory.md
+      Skills.md
+      Single Agent vs Multi-Agent.md
+  ai-infra/
+    AI Infra 方向.md
+    AI Infra 路径.md
+    AI Infra 信息来源.md
+    AI Infra 开源项目.md
+    AI Infra 框架和工具.md
+    概念/
+      Inference Serving.md
+      Model Gateway.md
+      Observability.md
+      Model Routing.md
+      GPU Basics.md
+  pre-train/
+    Pre-Train 方向.md
+    Pre-Train 路径.md
+    Pre-Train 信息来源.md
+    Pre-Train 开源项目.md
+    Pre-Train 框架和工具.md
+    概念/
+      Training Loop.md
+      Dataset Pipeline.md
+      Tokenizer Training.md
+      Checkpoint.md
+      Distributed Training.md
+  post-train/
+    Post-Train 方向.md
+    Post-Train 路径.md
+    Post-Train 信息来源.md
+    Post-Train 开源项目.md
+    Post-Train 框架和工具.md
+    概念/
+      SFT.md
+      Preference Optimization.md
+      RLHF.md
+      DPO.md
+      GRPO.md
+      Reward Model.md
+  rl/
+    RL 方向.md
+    RL 路径.md
+    RL 信息来源.md
+    RL 开源项目.md
+    RL 框架和工具.md
+    概念/
+      Environment.md
+      Policy.md
+      Reward.md
+      PPO.md
+      Offline RL.md
+      LLM RL Infra.md
 
 03-engineering-basics/
   概念/
@@ -315,73 +376,11 @@ GOAL.md
     Context Engineering.md
     RAG.md
     Prompt Cache.md
+    Cost.md
+    Security.md
 
-05-agents/
-  Agent.md
-  Agent 信息来源.md
-  Agent 开源项目.md
-  概念/
-    Agent Loop.md
-    ReAct.md
-    Tool Use.md
-    Memory.md
-    Skills.md
-    Single Agent vs Multi-Agent.md
-
-06-ai-infra/
-  AI Infra 方向.md
-  AI Infra 路径.md
-  AI Infra 信息来源.md
-  AI Infra 开源项目.md
-  AI Infra 框架和工具.md
-  概念/
-    Inference Serving.md
-    Model Gateway.md
-    Observability.md
-    Model Routing.md
-    GPU Basics.md
-
-07-pre-train/
-  Pre-Train 方向.md
-  Pre-Train 路径.md
-  Pre-Train 信息来源.md
-  Pre-Train 开源项目.md
-  Pre-Train 框架和工具.md
-  概念/
-    Training Loop.md
-    Dataset Pipeline.md
-    Tokenizer Training.md
-    Checkpoint.md
-    Distributed Training.md
-
-08-post-train/
-  Post-Train 方向.md
-  Post-Train 路径.md
-  Post-Train 信息来源.md
-  Post-Train 开源项目.md
-  Post-Train 框架和工具.md
-  概念/
-    SFT.md
-    Preference Optimization.md
-    RLHF.md
-    DPO.md
-    GRPO.md
-    Reward Model.md
-
-09-rl/
-  RL 方向.md
-  RL 路径.md
-  RL 信息来源.md
-  RL 开源项目.md
-  RL 框架和工具.md
-  概念/
-    Environment.md
-    Policy.md
-    Reward.md
-    PPO.md
-    Offline RL.md
-
-10-projects/
+05-projects/
+06-papers/
 90-resources/
 ```
 
@@ -390,10 +389,10 @@ GOAL.md
 - 仓库要改成带学习顺序的编号目录，不再坚持完全非线性组织
 - 如果现有仓库结构不满足这个目标文档，先直接修改结构，再写内容；不要为了迁就旧结构而在错误目录里继续写作
 - `01-foundations` 先讲所有方向共用的 AI 基石
-- `02-ai-directions` 负责讲清楚 AI 行业的主要方向，让读者先知道有哪些路可以走
+- `02-ai-directions` 负责讲清楚 AI 行业的主要方向，并收纳每条重点方向的首页、路径、项目、工具、信息来源和概念教程
 - `03-engineering-basics` 放围绕 AI 应用开发必须理解的工程基础，例如 HTTP、WebSocket、SSE、流式响应和 API 鉴权
 - Agent、AI Infra、Pre-Train、Post-Train、RL 是当前优先纳入方向地图的几条线
-- `agents/概念` 只放 Agent 特有或强相关概念
+- `02-ai-directions/agent/概念` 只放 Agent 特有或强相关概念
 - `AI Product` 不属于 Agent 核心目录
 - `Workflow` 和 `Human in the Loop` 更像流程或产品化内容，不放在 Agent 核心概念里
 - `Skills.md` 当前可以保留，因为它已经有比较具体的方法论和系统设计取舍
@@ -948,5 +947,4 @@ metadata:
 - `04-ai-systems/` 是否是合适命名，还是应该叫 `04-common-systems/`、`04-ai-core/`
 - 每条就业路径应该如何命名
 - Agent 方向是否先只保留 `Skills.md`，其它概念页后续重写
-- README 目前说“不会按 `01`、`02` 这种线性章节组织”，这和新判断冲突，需要后续同步修改
 - `AI Infra`、`Pre-Train`、`Post-Train`、`RL` 每条线的边界需要继续定义
