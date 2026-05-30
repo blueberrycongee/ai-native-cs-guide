@@ -1,6 +1,8 @@
 # RAG 工程架构
 
-RAG 的工程架构可以拆成索引侧和查询侧。很多 RAG demo 失败，是因为只写了查询侧：把文档切一切、向量搜一搜、塞进 prompt。真实系统更重要的是数据来源、权限、版本、更新和评测。
+RAG 的工程架构可以拆成索引侧和查询侧。这里说的是经典 RAG：先把文档切块并向量化，查询时召回候选片段，排序或重排后交给模型生成答案。
+
+很多 RAG demo 失败，是因为只写了查询侧：把文档切一切、向量搜一搜、塞进 prompt。真实系统更重要的是数据来源、权限、版本、更新和评测。
 
 ## 索引侧
 
@@ -27,13 +29,13 @@ connector -> parser -> cleaner -> chunker -> metadata builder -> embedder -> ind
 查询侧负责把用户问题变成可验证回答。
 
 ```text
-question -> query processing -> retrieval -> filtering -> reranking -> context packing -> generation -> logging
+question -> query embedding -> retrieval -> filtering -> ranking/reranking -> context packing -> generation -> logging
 ```
 
 查询侧最容易出问题的是把所有逻辑都塞进 prompt。更稳的边界是：
 
-- query processing：做查询改写、子问题拆分、关键词提取。
-- retrieval：用向量、关键词或混合检索取候选。
+- query embedding：把用户问题编码成检索向量，必要时提取少量关键词。
+- retrieval：用向量检索取候选，必要时结合关键词或混合检索。
 - filtering：按租户、权限、文档类型、时间、版本过滤。
 - reranking：让更精确但更贵的模型重新排序候选证据。
 - context packing：按引用、来源、顺序和 token 预算组织上下文。

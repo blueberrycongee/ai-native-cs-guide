@@ -1,8 +1,12 @@
 # RAG
 
-RAG，全称 Retrieval-Augmented Generation。不要把它理解成“向量库接一个模型”，更准确的说法是：
+RAG，全称 Retrieval-Augmented Generation。这个模块先按经典 RAG 来讲：把外部资料切块并向量化，查询时召回相关片段，排序或重排后放进模型上下文，再让模型基于这些片段生成答案。
 
-> RAG 是一个证据选择与上下文构造系统。它先从外部资料中找证据，再把证据组织成模型可用的上下文，最后要求模型基于这些证据回答。
+它首先是一种方法，不是一整套 Agent 架构。后续确实发展出了 Agentic RAG、GraphRAG、多步检索、自主查询规划等技术，但这些不作为本文的讨论范围。本文只关心最基础也最常用的这条线：
+
+```text
+chunk -> embed -> retrieve -> rank/rerank -> generate
+```
 
 它解决的是模型当前上下文里没有足够信息的问题。它不能自动解决所有幻觉，也不能替代权限、数据治理、评测和产品规则。
 
@@ -18,7 +22,7 @@ source documents
   -> clean
   -> chunk
   -> enrich metadata
-  -> embed / lexical index
+  -> embed
   -> store index
 ```
 
@@ -26,10 +30,10 @@ source documents
 
 ```text
 user question
-  -> query rewrite / decomposition
-  -> retrieve candidates
+  -> embed query
+  -> retrieve candidate chunks
   -> filter by metadata and permissions
-  -> rerank
+  -> rank / rerank
   -> pack context with citations
   -> generate answer
   -> evaluate / log
@@ -39,11 +43,11 @@ user question
 
 ## 核心判断
 
-现代 RAG 的核心不是向量检索，而是证据选择。
+这个模块讨论的 RAG 主线就是向量化后的召回和排序。难点不在“是否用了向量库”，而在向量化、召回、排序和上下文拼接是否真的把正确证据送到了模型面前。
 
-向量检索适合处理语义相似，但它对数字、版本号、代码符号、人名、产品名、错误码、权限过滤和时间过滤并不天然可靠。生产系统通常会组合 [[Hybrid Search]]、[[Metadata Filtering]]、[[Reranking]] 和 [[Citation]]。
+向量检索适合处理语义相似，但它对数字、版本号、代码符号、人名、产品名、错误码、权限过滤和时间过滤并不天然可靠。因此经典 RAG 往往还会补上 [[Hybrid Search]]、[[Metadata Filtering]]、[[Reranking]] 和 [[Citation]]。这些仍然属于“把证据找准、排好、放进上下文”的问题，不等于 Agentic RAG。
 
-RAG 也不是 [[Agent]]。普通 RAG pipeline 是 workflow：路径基本固定，系统按预设步骤检索、过滤、生成。只有当模型能根据中间 observation 动态决定下一步查什么、是否继续、是否换工具时，它才开始变得 agentic。
+RAG 和 [[Agent]] 的边界也要分清。普通 RAG pipeline 路径基本固定，系统按预设步骤检索、过滤、排序、生成。只有当模型能根据中间结果动态决定下一步查什么、是否继续、是否换工具时，它才进入 agentic RAG 的范围；这部分放到 Agent 或进阶专题里讨论。
 
 ## 目录入口
 
@@ -58,6 +62,8 @@ RAG 也不是 [[Agent]]。普通 RAG pipeline 是 workflow：路径基本固定�
 7. [[RAG 评测]]：把检索质量和回答质量拆开测。
 8. [[RAG 开源项目]]：选择框架、向量库和评测工具时看什么。
 
+[[Query Rewrite]] 可以作为检索前处理了解，但它不是这篇 RAG 主线的核心。先把向量化、召回、排序、引用和评测做好，再考虑复杂查询改写或多步检索。
+
 ## 最小项目
 
 第一个 RAG 项目不要一开始支持所有文件格式。选择一个固定文档集，例如 20 到 50 篇 Markdown 或网页文档，先做闭环：
@@ -69,7 +75,7 @@ RAG 也不是 [[Agent]]。普通 RAG pipeline 是 workflow：路径基本固定�
 - 回答必须带引用；证据不足时拒答。
 - 准备 30 个问题，记录 expected source、检索命中、引用是否支持结论。
 
-能跑通这个闭环之后，再加 PDF、多租户、增量更新、复杂 query rewrite 和更重的评测工具。
+能跑通这个闭环之后，再加 PDF、多租户、增量更新和更重的评测工具。复杂 query rewrite、agentic RAG 和多步检索不要放在第一个版本里。
 
 ## 参考资料
 

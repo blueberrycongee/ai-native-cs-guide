@@ -5,7 +5,7 @@
 ## LlamaIndex
 
 - 文档：[LlamaIndex RAG](https://developers.llamaindex.ai/python/framework/understanding/rag/)
-- 类型：数据接入、索引、查询、Agent/RAG 应用框架
+- 类型：数据接入、索引、查询和 RAG 应用框架
 
 LlamaIndex 适合看 RAG 的阶段划分。它把 RAG 拆成 loading、indexing、storing、querying、evaluation，并区分 Document、Node、Retriever、Node Postprocessor、Response Synthesizer。
 
