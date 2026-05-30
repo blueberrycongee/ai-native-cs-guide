@@ -41,6 +41,20 @@ Hermes Agent 是 self-hosted / skill-based agent。它把 skills、memory、mess
 
 LangGraph 用 graph / workflow 表达有状态 Agent 流程。它把状态机、节点和边、checkpoint、人类介入、workflow 和 agent loop 的边界放到框架抽象里。
 
+### Dify
+
+- GitHub：[langgenius/dify](https://github.com/langgenius/dify)
+- 官网：[dify.ai](https://dify.ai/)
+
+Dify 更接近 agentic workflow 和 LLM 应用开发平台，而不是只给代码调用的轻量库。它把 workflow、RAG pipeline、agent capabilities、模型管理、工具接入、观测和应用发布放在一个产品化系统里，适合观察 Agent 如何从框架抽象进入可部署应用。
+
+### Eino
+
+- GitHub：[cloudwego/eino](https://github.com/cloudwego/eino)
+- Docs：[cloudwego.io/docs/eino](https://www.cloudwego.io/docs/eino/)
+
+Eino 是 CloudWeGo 生态里的 Go 语言 LLM / Agent 应用开发框架。它围绕 ChatModel、Tool、Retriever、ChatTemplate 等组件抽象组织应用，也提供 Agent Development Kit、graph / workflow composition、streaming、callback 和 human-in-the-loop 相关能力。
+
 ### AutoGen
 
 - GitHub：[microsoft/autogen](https://github.com/microsoft/autogen)
