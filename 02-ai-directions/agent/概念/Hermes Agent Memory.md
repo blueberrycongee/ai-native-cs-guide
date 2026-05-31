@@ -27,15 +27,25 @@ context compression 是一个例外。压缩会触发 system prompt invalidation
 
 ## 内置 Memory 和 Prompt
 
-Hermes 的内置 memory 不是“模型有一个记忆区”这么简单。真正起作用的是这条路径：
+Hermes 的内置 memory 进入上下文的方式很直接：不是建索引，也不是靠模型之后调用 read 工具间接读取。Agent 初始化时，`MemoryStore.load_from_disk()` 会读取 `$HERMES_HOME/memories/MEMORY.md` 和 `USER.md`，把文件切成条目，做安全扫描，然后生成一份 `_system_prompt_snapshot`。构造 system prompt 时，Hermes 再把这份 snapshot 渲染成文本块，直接 append 到 prompt 的 volatile 部分。
 
-1. 启动 Agent 时，Hermes 读取 `MEMORY.md` 和 `USER.md`。
-2. 这些文件被渲染成 system prompt 里的 memory block。
-3. 模型在对话中看到这个 block，于是会被这些长期事实影响。
+这里要把三件事分开：
+
+- load：`MemoryStore` 从磁盘读取 `MEMORY.md` 和 `USER.md`。
+- inject：`MEMORY.md` 只有在 `memory_enabled` 打开时进入 prompt；`USER.md` 只有在 `user_profile_enabled` 打开时进入 prompt。两个开关都打开时，两个文件对应的 block 都会直接出现在 system prompt 里。
+- read tool：`memory(action=read)` 读的是当前 live state，主要用于查看、确认和删除 memory。它不是内置 memory 进入模型上下文的路径。
+
+所以，文件是存储层，prompt snapshot 才是生效层。模型发起当轮 API 调用时，如果对应开关打开，它已经在 system prompt 里看到了 `MEMORY.md` / `USER.md` 的内容，不需要再通过 read 工具查一遍。
+
+一个 session 里的完整路径大致是：
+
+1. 启动 Agent 时，Hermes 从磁盘读取 `MEMORY.md` 和 `USER.md`。
+2. 文件内容被渲染成 system prompt 里的 memory block。
+3. 模型在对话中直接看到这个 block，于是会被这些长期事实影响。
 4. 如果模型调用 `memory` 工具，新条目会写回文件。
-5. 下一次 session 启动时，新的文件内容再进入 prompt。
+5. 当前 session 的 prompt 仍然使用启动时的 snapshot；下一次 session 启动，新的文件内容才进入 prompt。
 
-也就是说，文件是存储层，prompt 才是生效层。内置 memory 的设计重点不在“怎么召回大量历史”，而在“哪些少量事实可以稳定地进入 system prompt”。
+内置 memory 的设计重点不在“怎么召回大量历史”，而在“哪些少量事实可以稳定地进入 system prompt”。
 
 这条路径里有三块 prompt surface：
 
@@ -53,7 +63,7 @@ Hermes 的内置 memory 不是“模型有一个记忆区”这么简单。真�
 
 `MEMORY_SCHEMA` 是第三层。它表面上是工具参数定义，但 description 也在提示模型：什么时候保存、写到 `memory` 还是 `user`、什么内容跳过。Hermes 把这些规则同时放在 system guidance 和 tool schema 里，是因为模型真正决定要不要写 memory 时，工具描述就在当前行动空间里。
 
-所以内置文件 memory 可以概括成一句话：启动时读文件进 prompt，对话中用工具改文件，下一次 session 再把新文件读回 prompt。安全扫描放在这条路径上也就合理了；进入 `MEMORY.md` 的内容之后会变成 system prompt 的一部分，它的风险更接近 context file，而不是普通日志。
+安全扫描放在这条路径上也就合理了；进入 `MEMORY.md` 的内容之后会变成 system prompt 的一部分，它的风险更接近 context file，而不是普通日志。
 
 ## 文件层的防护
 
