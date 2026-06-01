@@ -28,14 +28,6 @@ observation 是智能体看到的状态。action 是智能体能做的动作。r
 
 大模型 agent 环境也类似。代码任务、网页任务、工具任务，本质上都要定义状态、动作和反馈。
 
-## 常见失败模式
-
-- observation 泄露答案，训练分数虚高。
-- action space 太大，探索无效。
-- termination 条件不清，episode 变成无限循环。
-- 环境随机性不可控，实验不可复现。
-- reward 和真实目标不一致。
-
 ## 参考资料
 
 - [Gymnasium docs](https://gymnasium.farama.org/)
