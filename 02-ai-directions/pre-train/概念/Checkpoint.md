@@ -32,14 +32,6 @@ tokenizer
 
 大模型训练里，checkpoint 还涉及分片、存储带宽、跨节点恢复和格式转换。
 
-## 常见失败模式
-
-- 只保存模型权重，训练中断后 optimizer 状态丢失。
-- tokenizer 没和 checkpoint 一起保存。
-- checkpoint 太频繁，存储爆掉。
-- checkpoint 太少，失败后回滚太远。
-- 没记录代码版本，几周后无法加载。
-
 ## 参考项目
 
 - [nanoGPT](https://github.com/karpathy/nanoGPT)：看简单 checkpoint 保存和恢复。
