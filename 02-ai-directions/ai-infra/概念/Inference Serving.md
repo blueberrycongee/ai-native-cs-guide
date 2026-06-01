@@ -40,11 +40,9 @@ vLLM、SGLang、llama.cpp 都可以提供 OpenAI-compatible API，但内部调�
 
 ## 常见失败模式
 
-- 只看 tokens/s，不看 p95 latency 和 TTFT。
 - 长上下文请求占满 KV cache，短请求也变慢。
-- streaming 接口能跑，但代理缓冲导致前端看不到流式。
-- OpenAI-compatible server 对 tool call 或 structured output 支持不一致。
-- 模型加载成功，但并发后显存碎片、OOM 或排队失控。
+- streaming 接口能跑，但反向代理或框架缓冲导致前端看不到流式。
+- OpenAI-compatible server 对 tool call 或 structured output 支持不一致，工程上要按后端分别测一遍。
 
 ## 参考项目
 
