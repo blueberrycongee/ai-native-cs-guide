@@ -29,7 +29,7 @@ Skills 的关键设计是 progressive disclosure。典型流程是：
 
 最小结构是 `my-skill/SKILL.md`。更完整的形态通常包含 `references/`、`scripts/`、`assets/`，按需读取。`SKILL.md` 由 YAML frontmatter 和 Markdown 正文组成，最关键的两个字段是 `name` 和 `description`。`name` 通常和目录名一致；`description` 决定 skill 在自动触发时是否被选中。
 
-`description` 的工程位置比看起来更重要：它不是文档，是路由信号。差的写法是 `description: Helps with docs.`；好的写法是说明什么时候用、用户可能怎么表达、什么时候不要用、关键触发词、任务边界。Codex 文档也明确这一点：初始 skills 列表有上下文预算，skill 太多时描述会被缩短，极端情况下某些 skills 会从初始列表里省略。所以 `description` 的精度直接决定 skill 能否被触发。
+`description` 的工程位置比看起来更重要：它不是文档，是路由信号。差的写法是 `description: Helps with docs.`；好的写法是说明什么时候用、用户可能怎么表达、什么时候不要用、关键触发词、任务边界。比如同样是“维护 Markdown 笔记库”这件事，差的 description 只写一个意图标签，好的 description 会写明“编辑笔记时触发，但不做一般写作任务”这种排除条件。Codex 文档也明确这一点：初始 skills 列表有上下文预算，skill 太多时描述会被缩短，极端情况下某些 skills 会从初始列表里省略。所以 `description` 的精度直接决定 skill 能否被触发。
 
 ## 适合和不适合
 
@@ -39,9 +39,21 @@ Skills 的关键设计是 progressive disclosure。典型流程是：
 
 判断方法是看信息的覆盖范围：所有任务都需要就放 `AGENTS.md`，只有某类任务需要就放 skill。
 
+一个具体例子是“安全”。`不要泄露 secrets` 必须放 `AGENTS.md`，因为这条规则在每次任务里都成立；`处理 PR 时按顺序跑 lint、test、build` 适合放 skill，因为不是每个任务都在处理 PR，但一旦处理就该完整执行。再细一层，`AGENTS.md` 里还可以写“处理 PR 时调用 review skill”，把触发条件也常驻化，保证 skill 不会因为没触发而漏掉。
+
 ## Skill、AGENTS.md、Tool 的关系
 
 Tool 是动作能力，是模型可以直接调用的接口。Skill 是做事方法，告诉模型在某个任务下应该按什么顺序、用哪些 tool、产出什么格式。`AGENTS.md` 是常驻规则，定义边界和触发条件。一个常见的组合是：`AGENTS.md` 写“修改文档时必须使用某个 skill”，skill 写具体怎么检查链接、怎么处理双向链接、什么时候跑脚本；`AGENTS.md` 负责保证触发，skill 负责保证细节。
+
+## 怎么验证 skill 没坏
+
+skill 的失败模式和其他 prompt 资产不同：单次 prompt 坏了，下一轮重写就行；skill 坏了，触发条件没命中时不会有人发现，命中时输出已经定型。验证至少覆盖三件事：
+
+- 触发是否对：写几类该触发的任务和几类不该触发的任务，看 description 是否把模型引到正确分支。
+- 输出是否稳：同一任务多次跑，看步骤、产出格式、调用顺序是否稳定。
+- 内容是否过期：skill 写的是“PR review 时跑 lint、test、build”，如果项目后来加了新检查，skill 不会自动跟上；要靠 [[Evals]] 或定期复审来发现。
+
+第三方 skill 风险更直接：skill 里的脚本和参考资料在加载后会成为 model context 的一部分，加载路径如果不可信，引入 skill 等价于引入一段可执行文本。`Security` 那一章里讲的 prompt 不是安全边界，对 skill 同样成立——触发谁写、加载谁写、跑什么脚本，应该在引入前看。
 
 ## 相关概念
 
