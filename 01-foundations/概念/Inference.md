@@ -51,7 +51,6 @@ with trace("llm_call") as span:
 
 常见失败包括：
 
-- 没有 timeout，慢请求堆满 worker。
 - 用户关闭页面后模型请求仍在运行。
 - 所有错误都显示成“AI 失败”，无法定位 401、429、5xx 或解析错误。
 - 流式输出没有事件边界，前端 Markdown、JSON 或工具状态渲染混乱。
