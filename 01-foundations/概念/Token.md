@@ -49,7 +49,7 @@ if input_tokens + max_output_tokens > context_limit:
 - 把完整日志、HTML 或 PDF 原文塞进上下文，token 成本很快失控。
 - 流式渲染时按字符处理，遇到半个 token、半个 Markdown 结构或半个 JSON 片段就显示异常。
 
-Token 不是自然语言单位。它只是模型和系统之间的接口单位。写应用时要尊重这个接口。
+Token 是模型和系统之间的接口单位。计费、上下文长度、缓存、流式输出和截断都建立在这层抽象上。
 
 ## 参考资料
 
