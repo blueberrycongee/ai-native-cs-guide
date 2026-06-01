@@ -99,7 +99,7 @@ Attention 容易被误用成解释工具。看到某些 token 权重大，只能
 - 长上下文成本失控，却没有缓存、裁剪和分层摘要策略。
 - 调试幻觉时只改 prompt，不检查检索、排序、引用和上下文拼接。
 
-如果你的项目是 [[Agent]] 或 [[RAG]]，优先关心 attention 对上下文设计的影响。等你做 [[AI Infra]]，再深入 FlashAttention、KV cache 分页和调度。
+在 Agent 或 RAG 项目里，attention 的影响主要落在上下文设计；到 [[AI Infra]] 层面才会涉及 FlashAttention、KV cache 分页和调度。
 
 ## 参考资料
 
