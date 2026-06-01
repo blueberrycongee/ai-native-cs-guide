@@ -32,14 +32,6 @@ repeat
 
 CleanRL 的单文件实现适合读这些细节。Stable-Baselines3 适合快速跑 baseline。
 
-## 常见失败模式
-
-- reward 设计差，PPO 只是更稳定地学错。
-- 超参数敏感，seed 不同结果差很多。
-- value function 学不好，advantage 噪声大。
-- 训练 reward 上升，eval 行为退化。
-- 在 LLM RLHF 里 rollout 成本很高。
-
 ## 参考资料
 
 - [PPO paper](https://arxiv.org/abs/1707.06347)
