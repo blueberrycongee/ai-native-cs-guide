@@ -32,14 +32,6 @@ pretrained model
 
 这也是 OpenRLHF 这类框架要引入 Ray、vLLM、DeepSpeed 的原因。
 
-## 常见失败模式
-
-- reward model 学到标注偏差。
-- policy 学会刷 reward，而不是解决任务。
-- RL 阶段让语言质量或事实性退化。
-- 没有保留 reference model，行为漂移难控制。
-- 只看 reward，不看人工 eval。
-
 ## 参考资料
 
 - [InstructGPT paper](https://arxiv.org/abs/2203.02155)
