@@ -1,8 +1,10 @@
 # Memory
 
-Memory 在 Agent 系统里不是一个单一组件。它可能是 prompt bootstrap 文件、运行时 checkpoint、检索索引、用户画像、session 摘要、工具结果缓存，也可能是外部 memory provider。把它抽象成“短期记忆 / 长期记忆”很快会失真。
+> 这页是 memory 的入口索引，不做统一概论。[[Agent 概念]] 已经给出 Agent 方向的概念地图，这里按具体系统分。
 
-这页先作为具体实现的入口。
+Memory 在 Agent 系统里不是一个单一组件。它可能是 prompt bootstrap 文件、运行时 checkpoint、检索索引、用户画像、session 摘要、工具结果缓存，也可能是外部 memory provider。把它抽象成“短期记忆 / 长期记忆”很快会失真，因为这些对象的时效、容量、信任关系、检索方式都不一样，强行二分会把不同问题混在一起。
+
+这页按项目组织，下面四块各自看。
 
 ## Hermes Agent Memory
 
