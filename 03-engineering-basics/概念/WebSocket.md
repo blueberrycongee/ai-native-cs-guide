@@ -113,16 +113,7 @@ onclose
 
 ## 和 SSE 对照
 
-两者不要按“谁更高级”选择，而要按通信模型选择。
-
-| 维度 | SSE | WebSocket |
-| --- | --- | --- |
-| 通信方向 | 服务端到客户端单向 | 客户端和服务端双向 |
-| 协议形态 | HTTP 长响应，`text/event-stream` | HTTP 握手后升级为 WebSocket 协议 |
-| 浏览器 API | `EventSource` | `WebSocket` |
-| 数据格式 | 文本事件流，`event/data/id/retry` | text/binary message，业务格式自定义 |
-| 自动重连 | `EventSource` 内置重连 | 需要应用自己实现 |
-| 典型 AI 场景 | 模型文本流、任务进度、服务端事件 | 语音流、Agent 控制台、双向实时协作 |
+两者不要按“谁更高级”选择，而要按通信模型选择。详细对照见 [[SSE#和 WebSocket 对照]]。
 
 普通聊天输出优先用 [[SSE]]。需要客户端持续发送实时控制或音频数据，再用 WebSocket。
 
