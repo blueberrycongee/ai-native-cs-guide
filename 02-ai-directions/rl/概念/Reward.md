@@ -26,14 +26,6 @@ reward 可以稀疏，比如任务完成才给分；也可以密集，比如每�
 
 大模型后训练里的 reward function、verifier、reward model，本质上也在处理这个问题。
 
-## 常见失败模式
-
-- reward hacking：策略学会刷分，不做真实任务。
-- 只奖励最终答案，忽略危险过程。
-- reward 太稀疏，训练没有信号。
-- reward 和 eval 同源，分数虚高。
-- 人类偏好标注标准不一致。
-
 ## 参考资料
 
 - [InstructGPT paper](https://arxiv.org/abs/2203.02155)
