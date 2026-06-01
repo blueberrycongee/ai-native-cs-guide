@@ -35,14 +35,6 @@ Distributed Training 是把训练拆到多张 GPU 或多台机器上。它不是
 - 失败节点和任务重启。
 - 吞吐、显存和网络监控。
 
-## 常见失败模式
-
-- 单卡能跑，多卡 loss 不一致。
-- checkpoint 在不同并行配置下无法加载。
-- 通信成为瓶颈，GPU 利用率低。
-- pipeline bubble 导致吞吐不如预期。
-- 随机种子和数据切分不稳定，实验不可复现。
-
 ## 参考资料
 
 - [Megatron-LM](https://github.com/NVIDIA/Megatron-LM)
